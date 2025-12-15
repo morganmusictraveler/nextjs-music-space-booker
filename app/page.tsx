@@ -12,24 +12,14 @@ export default function Page() {
       {/* Demo Page Header */}
       <div className="border-b">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">MT</span>
-              </div>
-              <h1 className="text-xl font-bold">Music Traveler</h1>
-            </div>
-            <nav className="hidden md:flex gap-6 text-sm">
-              <a href="#" className="text-muted-foreground hover:text-foreground">
-                Spaces
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground">
-                How it Works
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground">
-                About
-              </a>
-            </nav>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Powered by</span>
+            <a href="https://musictraveler.com" target="_blank">
+              <img
+                src="https://d1r3culteut8k2.cloudfront.net/static/images/mt_logo_jan_2018_blue_512.png"
+                alt="Music Traveler"
+                className="h-6"
+              /></a>
           </div>
         </div>
       </div>
@@ -39,19 +29,16 @@ export default function Page() {
         <div
           className="h-[60vh] bg-cover bg-center"
           style={{
-            backgroundImage: `url(/placeholder.svg?height=800&width=1600&query=professional+music+recording+studio+interior)`,
+            backgroundImage: `url(https://d1r3culteut8k2.cloudfront.net/media/attachments/room_room/3461/thumbs/thumb_3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg.1920x1080_q85.jpg)`,
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80" />
           <div className="relative container mx-auto px-4 h-full flex flex-col justify-center">
             <div className="max-w-2xl">
-              <h2 className="text-5xl font-bold text-white mb-4 text-balance">Harmony Recording Studio</h2>
+              <h2 className="text-5xl font-bold text-white mb-4 text-balance">House of Strauss - Strauss Piano Room</h2>
               <p className="text-xl text-white/90 mb-8 text-pretty">
-                Professional recording and rehearsal space in the heart of Brooklyn
+                Historic Viennese palace with the renovated grand piano of J. Strauss himself
               </p>
-              <Button size="lg" onClick={() => setShowWidget(true)}>
-                Book Your Session
-              </Button>
             </div>
           </div>
         </div>
@@ -60,22 +47,40 @@ export default function Page() {
       {/* Demo Content */}
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">About Our Studio</h2>
+          {/* <h2 className="text-3xl font-bold mb-6">About This Space</h2>
           <div className="prose prose-lg">
             <p className="text-muted-foreground leading-relaxed">
-              Harmony Recording Studio offers world-class facilities for musicians, producers, and artists. Our space
-              features cutting-edge equipment, exceptional acoustics, and a creative atmosphere that brings out the best
-              in every session.
+              The House of Strauss offers a truly unique venue experience in Vienna's historic Gartenpalais Zögernitz. With state-of-the-art facilities integrated into a beautifully preserved palace, it combines historic grandeur with modern technology. Perfect for classical performances, recordings, and special events.
             </p>
-          </div>
+          </div> */}
 
-          <div className="mt-12 p-8 bg-secondary rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Try the Booking Widget</h3>
-            <p className="text-muted-foreground mb-6">
-              Click the button below to see how the Music Traveler booking widget works. This widget can be easily
-              embedded on any studio's website.
-            </p>
-            <Button onClick={() => setShowWidget(true)}>Open Booking Widget</Button>
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Widget Demo Card */}
+            <div className="p-8 bg-secondary rounded-lg flex flex-col">
+              <h3 className="text-xl font-semibold mb-4">Try the Booking Widget</h3>
+              <p className="text-muted-foreground mb-6 text-sm flex-grow">
+                Click the button below to see how the Music Traveler booking widget works. This widget can be easily
+                embedded on any studio's website.
+              </p>
+              <Button onClick={() => setShowWidget(true)} className="w-full">
+                Open Booking Widget
+              </Button>
+            </div>
+
+            {/* Full Page Mockups Card */}
+            <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col">
+              <h3 className="text-xl font-semibold mb-4">View Full-Page Mockups</h3>
+              <p className="text-muted-foreground mb-6 text-sm flex-grow">
+                Check out the full-page host space designs that are perfect for marketing and more detailed listings.
+              </p>
+              <div className="space-y-2">
+                <a href="/host/house-of-strauss">
+                  <Button className="w-full">
+                    House of Strauss (Vienna)
+                  </Button>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -83,23 +88,21 @@ export default function Page() {
       {/* Booking Widget Modal */}
       {showWidget && (
         <BookingWidget
-          studioName="Harmony Recording Studio"
+          studioName="House of Strauss - Strauss Piano Room"
           studioType="recording"
-          address="123 Music Ave, Brooklyn, NY 11201"
-          phone="+1 (555) 123-4567"
-          website="https://harmonyrecording.com"
-          description="Professional recording studio with state-of-the-art equipment. All bookings require a valid ID and 50% deposit. Experienced sound engineer included with all sessions."
+          address="Gartenpalais Zögernitz, Vienna, AT 1010"
+          phone="+43 (1) 555-0456"
+          website="houseofstrauss.at"
+          description="Historic Viennese palace with the renovated grand piano of J. Strauss himself. A premier event and performance venue with state-of-the-art technology integrated into a meticulously preserved historic space."
           amenities={[
-            "Pro Tools HD",
-            "Neumann Microphones",
-            "SSL Console",
-            "Vocal Booth",
-            "Live Room",
-            "Control Room",
-            "Instruments Available",
-            "Free Parking",
+            "Windows",
+            "WiFi",
+            "Air Conditioning",
+            "Historic Architecture",
+            "Grand Piano",
+            "Professional Sound System",
           ]}
-          mapUrl="/brooklyn-map-location.jpg"
+          mapUrl="https://d1r3culteut8k2.cloudfront.net/media/attachments/room_room/3461/thumbs/thumb_3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg.1920x1080_q85.jpg"
           showAsModal={true}
           onClose={() => setShowWidget(false)}
         />
