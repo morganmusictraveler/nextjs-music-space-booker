@@ -66,7 +66,7 @@ export function BookingWidget({
       {/* Header */}
       <div className="flex items-center justify-between px-8 py-6 border-b backdrop-blur-sm bg-card/95">
         <div className="flex items-center gap-4">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 ring-1 ring-primary/10">
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-primary/10 to-accent/10 ring-1 ring-primary/10">
             <Music2 className="w-6 h-6 text-primary" />
           </div>
           <div>
@@ -90,7 +90,7 @@ export function BookingWidget({
       <div className="flex-1 overflow-y-auto">
         <div className="px-8 py-6 space-y-8">
           {/* Need to Know Section */}
-          <Card className="p-5 bg-gradient-to-br from-secondary/30 to-secondary/10 border-secondary/40 shadow-sm">
+          <Card className="p-5 bg-linear-to-br from-secondary/30 to-secondary/10 border-secondary/40 shadow-sm">
             <h3 className="font-semibold mb-2.5 text-foreground tracking-tight">Need to Know</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {description ||
