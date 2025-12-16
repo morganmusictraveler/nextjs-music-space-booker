@@ -26,6 +26,7 @@ import {
     Share2,
     ChevronRight,
     MessageCircle,
+    User,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -118,21 +119,15 @@ export function HostSpacePage({
             {/* Header Navigation */}
             <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-sm">
                 <div className="container mx-auto px-4 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                                <Music2 className="w-5 h-5 text-primary-foreground" />
-                            </div>
-                            <span className="font-semibold text-lg hidden sm:inline">Powered by Music Traveler</span>
-                        </div>
-                        <nav className="flex items-center gap-4">
-                            <Button variant="ghost" size="sm">
-                                Spaces
-                            </Button>
-                            <Button variant="default" size="sm">
-                                List Your Space
-                            </Button>
-                        </nav>
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">Powered by</span>
+                        <a href="https://musictraveler.com" target="_blank">
+                            <img
+                                src="https://d1r3culteut8k2.cloudfront.net/static/images/mt_logo_jan_2018_blue_512.png"
+                                alt="Music Traveler"
+                                className="h-6"
+                            />
+                        </a>
                     </div>
                 </div>
             </header>
@@ -142,7 +137,7 @@ export function HostSpacePage({
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: imageUrl || `url(/placeholder.svg?height=800&width=1600)`,
+                        backgroundImage: `url(${imageUrl})`,
                     }}
                 >
                     <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
@@ -152,43 +147,46 @@ export function HostSpacePage({
                 <div className="relative h-full flex flex-col justify-between p-6 md:p-10">
                     <div className="flex items-start justify-between">
                         <div className="space-y-3">
-                            <Badge variant="secondary" className="w-fit gap-1">
+                            {/* stars and reviews */}
+                            {/* <Badge variant="secondary" className="w-fit gap-1">
                                 <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                                 {rating} ({reviewCount} reviews)
-                            </Badge>
+                            </Badge> */}
                         </div>
                         <div className="flex gap-2">
-                            <Button
+                            {/* heart button from MT site */}
+                            {/* <Button
                                 variant="secondary"
                                 size="icon"
                                 className="rounded-full backdrop-blur-sm bg-white/20 hover:bg-white/30 border-white/20"
                                 onClick={() => setIsWishlisted(!isWishlisted)}
                             >
                                 <Heart className={cn("w-5 h-5", isWishlisted && "fill-red-500 text-red-500")} />
-                            </Button>
-                            <Button
+                            </Button> */}
+                            {/* extra button from MT site */}
+                            {/* <Button
                                 variant="secondary"
                                 size="icon"
                                 className="rounded-full backdrop-blur-sm bg-white/20 hover:bg-white/30 border-white/20"
                             >
                                 <Share2 className="w-5 h-5" />
-                            </Button>
+                            </Button> */}
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         <div>
                             <h1 className="text-5xl md:text-6xl font-bold text-white mb-3 text-balance leading-tight">
-                                {spaceName}
+                                Book {spaceName}
                             </h1>
                             <p className="text-xl text-white/90 flex items-center gap-2">
                                 <MapPin className="w-5 h-5 shrink-0" />
                                 {city}, {state}
                             </p>
                         </div>
-                        <Badge variant="outline" className="w-fit text-white border-white/40 bg-white/10 capitalize">
+                        {/* <Badge variant="outline" className="w-fit text-white border-white/40 bg-white/10 capitalize">
                             {spaceType} Space • Hosted by {hostName}
-                        </Badge>
+                        </Badge> */}
                     </div>
                 </div>
             </section>
@@ -201,24 +199,24 @@ export function HostSpacePage({
                     <div className="grid grid-cols-3 gap-4">
                         <Card className="p-6 text-center hover:shadow-md transition-shadow">
                             <div className="flex justify-center mb-3">
+                                <Music2 className="w-6 h-6 text-primary" />
+                            </div>
+                            <div className="text-2xl font-bold capitalize">{spaceType}</div>
+                            <p className="text-sm text-muted-foreground mt-1">Space</p>
+                        </Card>
+                        <Card className="p-6 text-center hover:shadow-md transition-shadow">
+                            <div className="flex justify-center mb-3">
+                                <User className="w-6 h-6 text-primary" />
+                            </div>
+                            <div className="text-2xl font-bold">{hostName}</div>
+                            <p className="text-sm text-muted-foreground mt-1">Your host</p>
+                        </Card>
+                        <Card className="p-6 text-center hover:shadow-md transition-shadow">
+                            <div className="flex justify-center mb-3">
                                 <Award className="w-6 h-6 text-primary" />
                             </div>
                             <div className="text-2xl font-bold">{reviewCount}+</div>
                             <p className="text-sm text-muted-foreground mt-1">Happy Guests</p>
-                        </Card>
-                        <Card className="p-6 text-center hover:shadow-md transition-shadow">
-                            <div className="flex justify-center mb-3">
-                                <Clock className="w-6 h-6 text-primary" />
-                            </div>
-                            <div className="text-2xl font-bold">24/7</div>
-                            <p className="text-sm text-muted-foreground mt-1">Booking</p>
-                        </Card>
-                        <Card className="p-6 text-center hover:shadow-md transition-shadow">
-                            <div className="flex justify-center mb-3">
-                                <Shield className="w-6 h-6 text-primary" />
-                            </div>
-                            <div className="text-2xl font-bold">100%</div>
-                            <p className="text-sm text-muted-foreground mt-1">Safe & Secure</p>
                         </Card>
                     </div>
 
@@ -290,7 +288,6 @@ export function HostSpacePage({
                                 <div className="space-y-3">
                                     {rules.map((rule, index) => (
                                         <Card key={index} className="p-4 flex gap-3 hover:shadow-md transition-shadow">
-                                            <ChevronRight className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                                             <p className="text-sm">{rule}</p>
                                         </Card>
                                     ))}
@@ -342,7 +339,7 @@ export function HostSpacePage({
                         <Card className="p-6 space-y-4">
                             <div className="aspect-video w-full rounded-lg overflow-hidden bg-muted">
                                 <img
-                                    src="/placeholder.svg?height=400&width=600&query=map"
+                                    src="/map.png"
                                     alt="Studio location"
                                     className="w-full h-full object-cover"
                                 />

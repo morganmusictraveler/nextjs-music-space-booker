@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 
 import { HostSpacePage } from "@/components/host-space-page"
 
@@ -29,24 +29,17 @@ The palace has once again established itself as a premier event venue, regularly
             "Windows",
             "WiFi",
             "Air Conditioning",
-            "Historic Architecture",
-            "Grand Piano",
-            "Professional Sound System",
         ],
         equipment: [
             "Bösendorfer Grand Piano",
-            "J. Strauss Original Grand Piano",
             "Professional Audio System",
             "Lighting System",
-            "Video Equipment",
         ],
         rules: [
             "No smoking inside the facility",
             "Cancellations made 24 hours or more before booking receive full refund",
             "No refund for cancellations within 24 hours",
-            "Respect the historic nature of the venue",
             "Maximum capacity: 10 persons",
-            "Exact address available after booking approval",
         ],
         reviews: [
             {

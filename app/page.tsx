@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import { BookingWidget } from "@/components/booking-widget"
+import { InquiryWidget } from "@/components/inquiry-widget"
 import { Button } from "@/components/ui/button"
 
 export default function Page() {
   const [showWidget, setShowWidget] = useState(false)
+  const [showInquiryWidget, setShowInquiryWidget] = useState(false)
 
   return (
     <div className="min-h-screen bg-background">
@@ -67,8 +69,19 @@ export default function Page() {
               </Button>
             </div>
 
-            {/* Full Page Mockups Card */}
+            {/* Inquiry Widget Demo Card */}
             <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col">
+              <h3 className="text-xl font-semibold mb-4">Try the Inquiry Widget</h3>
+              <p className="text-muted-foreground mb-6 text-sm flex-grow">
+                See the inquiry widget for upon-request bookings. Perfect for venues that handle custom inquiries.
+              </p>
+              <Button onClick={() => setShowInquiryWidget(true)} className="w-full">
+                Open Inquiry Widget
+              </Button>
+            </div>
+
+            {/* Full Page Mockups Card */}
+            <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col md:col-span-2">
               <h3 className="text-xl font-semibold mb-4">View Full-Page Mockups</h3>
               <p className="text-muted-foreground mb-6 text-sm flex-grow">
                 Check out the full-page host space designs that are perfect for marketing and more detailed listings.
@@ -105,6 +118,18 @@ export default function Page() {
           mapUrl="https://d1r3culteut8k2.cloudfront.net/media/attachments/room_room/3461/thumbs/thumb_3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg.1920x1080_q85.jpg"
           showAsModal={true}
           onClose={() => setShowWidget(false)}
+        />
+      )}
+
+      {/* Inquiry Widget Modal */}
+      {showInquiryWidget && (
+        <InquiryWidget
+          venueName="House of Strauss - Strauss Piano Room"
+          venueDescription="Historic Viennese palace with the renovated grand piano of J. Strauss himself."
+          phone="+43 (1) 555-0456"
+          email="bookings@houseofstrauss.at"
+          showAsModal={true}
+          onClose={() => setShowInquiryWidget(false)}
         />
       )}
 
