@@ -125,9 +125,11 @@ export default function Page() {
       {showInquiryWidget && (
         <InquiryWidget
           venueName="House of Strauss - Strauss Piano Room"
-          venueDescription="Historic Viennese palace with the renovated grand piano of J. Strauss himself."
+          venueType="recording"
+          address="Gartenpalais Zögernitz, Vienna, AT 1010"
           phone="+43 (1) 555-0456"
-          email="bookings@houseofstrauss.at"
+          website="houseofstrauss.at"
+          description="Historic Viennese palace with the renovated grand piano of J. Strauss himself. A premier event and performance venue with state-of-the-art technology integrated into a meticulously preserved historic space."
           showAsModal={true}
           onClose={() => setShowInquiryWidget(false)}
         />
