@@ -58,7 +58,7 @@ export default function Page() {
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Widget Demo Card */}
-            <div className="p-8 bg-secondary rounded-lg flex flex-col">
+            <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col">
               <h3 className="text-xl font-semibold mb-4">Try the Booking Widget</h3>
               <p className="text-muted-foreground mb-6 text-sm flex-grow">
                 Click the button below to see how the Music Traveler booking widget works. This widget can be easily
@@ -80,19 +80,30 @@ export default function Page() {
               </Button>
             </div>
 
-            {/* Full Page Mockups Card */}
-            <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col md:col-span-2">
-              <h3 className="text-xl font-semibold mb-4">View Full-Page Mockups</h3>
+            {/* Booking Page Mockup Card */}
+            <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col">
+              <h3 className="text-xl font-semibold mb-4">View Booking Page Mockup</h3>
               <p className="text-muted-foreground mb-6 text-sm flex-grow">
-                Check out the full-page host space designs that are perfect for marketing and more detailed listings.
+                Check out the full-page booking design that's perfect for marketing and detailed listings.
               </p>
-              <div className="space-y-2">
-                <a href="/host/house-of-strauss">
-                  <Button className="w-full">
-                    House of Strauss (Vienna)
-                  </Button>
-                </a>
-              </div>
+              <a href="/host/house-of-strauss">
+                <Button className="w-full">
+                  House of Strauss - Booking Page (Vienna)
+                </Button>
+              </a>
+            </div>
+
+            {/* Inquiry Page Mockup Card */}
+            <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col">
+              <h3 className="text-xl font-semibold mb-4">View Inquiry Page Mockup</h3>
+              <p className="text-muted-foreground mb-6 text-sm flex-grow">
+                Check out the full-page inquiry design for upon-request booking experiences.
+              </p>
+              <a href="/inquiry/house-of-strauss">
+                <Button className="w-full">
+                  House of Strauss - Inquiry Page (Vienna)
+                </Button>
+              </a>
             </div>
           </div>
         </div>
