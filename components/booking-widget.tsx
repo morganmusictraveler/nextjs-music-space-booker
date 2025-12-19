@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -39,6 +41,10 @@ export function BookingWidget({
   const [selectedTime, setSelectedTime] = useState<string>()
   const [guests, setGuests] = useState<string>("2")
   const [duration, setDuration] = useState<string>("2")
+  const [clientName, setClientName] = useState("")
+  const [clientEmail, setClientEmail] = useState("")
+  const [clientPhone, setClientPhone] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Generate time slots
   const timeSlots = [
@@ -56,9 +62,49 @@ export function BookingWidget({
     { time: "8:00 PM", available: false },
   ]
 
-  const handleBooking = () => {
-    console.log("[v0] Booking details:", { date, selectedTime, guests, duration })
-    alert("Booking request submitted! (This is a demo)")
+  const handleBooking = async () => {
+    if (!date || !selectedTime || !clientName || !clientEmail) {
+      alert("Please fill in all required fields")
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          venueName: studioName,
+          venueType: studioType,
+          address,
+          clientName,
+          clientEmail,
+          clientPhone,
+          date: format(date, "yyyy-MM-dd"),
+          time: selectedTime,
+          duration: parseInt(duration),
+          guests: parseInt(guests),
+          amount: 45 * parseInt(duration),
+        }),
+      })
+
+      if (response.ok) {
+        alert("Booking confirmed! You'll receive a confirmation email shortly.")
+        setDate(undefined)
+        setSelectedTime(undefined)
+        setClientName("")
+        setClientEmail("")
+        setClientPhone("")
+        if (onClose) onClose()
+      } else {
+        alert("Failed to create booking. Please try again.")
+      }
+    } catch (error) {
+      console.error("Error creating booking:", error)
+      alert("An error occurred. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const content = (
@@ -100,180 +146,222 @@ export function BookingWidget({
 
           {/* Booking Form */}
           <div className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {/* Date Picker */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal h-11 hover:bg-secondary/50 transition-colors",
-                      !date && "text-muted-foreground",
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-                    <span className="truncate">{date ? format(date, "PPP") : "Select date"}</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-                </PopoverContent>
-              </Popover>
-
-              {/* Guests */}
-              <Select value={guests} onValueChange={setGuests}>
-                <SelectTrigger className="h-11 hover:bg-secondary/50 transition-colors">
-                  <div className="flex items-center">
-                    <Users className="mr-2 h-4 w-4 shrink-0" />
-                    <SelectValue placeholder="Musicians" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Musician</SelectItem>
-                  <SelectItem value="2">2 Musicians</SelectItem>
-                  <SelectItem value="3">3 Musicians</SelectItem>
-                  <SelectItem value="4">4 Musicians</SelectItem>
-                  <SelectItem value="5">5+ Musicians</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Duration */}
-              <Select value={duration} onValueChange={setDuration}>
-                <SelectTrigger className="h-11 hover:bg-secondary/50 transition-colors">
-                  <div className="flex items-center">
-                    <Clock className="mr-2 h-4 w-4 shrink-0" />
-                    <SelectValue placeholder="Duration" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 hour</SelectItem>
-                  <SelectItem value="2">2 hours</SelectItem>
-                  <SelectItem value="3">3 hours</SelectItem>
-                  <SelectItem value="4">4 hours</SelectItem>
-                  <SelectItem value="8">Full day</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Time Slots */}
-            <div>
-              <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">Available Times</h3>
-              <div className="grid grid-cols-3 md:grid-cols-4 gap-2.5">
-                {timeSlots.map((slot) => (
-                  <Button
-                    key={slot.time}
-                    variant={selectedTime === slot.time ? "default" : "outline"}
-                    disabled={!slot.available}
-                    onClick={() => setSelectedTime(slot.time)}
-                    className={cn(
-                      "w-full h-11 font-medium transition-all",
-                      selectedTime === slot.time && "shadow-md",
-                      slot.available && selectedTime !== slot.time && "hover:border-primary/40 hover:bg-secondary/50",
-                    )}
-                  >
-                    {slot.time}
-                  </Button>
-                ))}
-              </div>
-              <Button
-                variant="outline"
-                className="w-full mt-4 h-11 bg-transparent hover:bg-secondary/50 transition-colors border-dashed"
-                disabled={!date}
-              >
-                🔔 Notify me if times open up
-              </Button>
-            </div>
-          </div>
-
-          {/* About Section */}
-          <div className="space-y-3 pt-2">
-            <h3 className="font-semibold text-foreground tracking-tight">About {studioName}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {studioType === "rehearsal"
-                ? `${studioName} is a professional rehearsal space designed for musicians. Equipped with industry-standard gear and acoustically treated rooms, it's perfect for band practice, solo sessions, and creative collaboration.`
-                : `${studioName} is a state-of-the-art recording studio offering professional audio recording, mixing, and mastering services. Our experienced engineers and premium equipment ensure the highest quality results for your music.`}
-            </p>
-          </div>
-
-          {/* Amenities */}
-          {amenities.length > 0 && (
-            <div className="space-y-4 pt-2">
-              <h3 className="font-semibold text-foreground tracking-tight">Amenities</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {amenities.map((amenity, index) => (
-                  <div key={index} className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary/80 shrink-0" />
-                    <span className="leading-tight">{amenity}</span>
-                  </div>
-                ))}
+            {/* Client Info Section */}
+            <div className="space-y-3 pb-4 border-b">
+              <h3 className="font-semibold text-foreground">Your Information</h3>
+              <div className="space-y-3">
+                <div>
+                  <Label htmlFor="name" className="text-sm mb-2 block">Full Name *</Label>
+                  <Input
+                    id="name"
+                    placeholder="John Doe"
+                    value={clientName}
+                    onChange={(e) => setClientName(e.target.value)}
+                    className="h-11"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email" className="text-sm mb-2 block">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="john@example.com"
+                    value={clientEmail}
+                    onChange={(e) => setClientEmail(e.target.value)}
+                    className="h-11"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone" className="text-sm mb-2 block">Phone (Optional)</Label>
+                  <Input
+                    id="phone"
+                    placeholder="+1 (555) 000-0000"
+                    value={clientPhone}
+                    onChange={(e) => setClientPhone(e.target.value)}
+                    className="h-11"
+                  />
+                </div>
               </div>
             </div>
-          )}
 
-          {/* Map */}
-          {mapUrl && (
-            <div className="space-y-4 pt-2">
-              <h3 className="font-semibold text-foreground tracking-tight">Location</h3>
-              <div className="aspect-video w-full rounded-xl overflow-hidden bg-muted ring-1 ring-border shadow-sm">
-                <img src={mapUrl || "/placeholder.svg"} alt="Studio location" className="w-full h-full object-cover" />
-              </div>
-            </div>
-          )}
-
-          {/* Contact Info */}
-          <div className="space-y-4 pb-6 pt-2">
-            <h3 className="font-semibold text-foreground tracking-tight">{studioName}</h3>
+            {/* Booking Details */}
             <div className="space-y-3">
-              <div className="flex items-start gap-3 text-sm">
-                <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground/80 shrink-0" />
-                <span className="text-muted-foreground leading-relaxed">{address}</span>
-              </div>
-              {phone && (
-                <a
-                  href={`tel:${phone}`}
-                  className="flex items-center gap-3 text-sm text-primary hover:text-primary/80 transition-colors group"
-                >
-                  <Phone className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
-                  <span className="group-hover:underline">{phone}</span>
-                </a>
-              )}
-              {website && (
-                <a
-                  href={website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-sm text-primary hover:text-primary/80 transition-colors group"
-                >
-                  <Globe className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
-                  <span className="group-hover:underline">{website}</span>
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+              <h3 className="font-semibold text-foreground">Booking Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* Date Picker */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal h-11 hover:bg-secondary/50 transition-colors",
+                        !date && "text-muted-foreground",
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                      <span className="truncate">{date ? format(date, "PPP") : "Select date"}</span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                  </PopoverContent>
+                </Popover>
 
-      {/* Footer with Booking Button */}
-      <div className="border-t backdrop-blur-sm bg-card/95 px-8 py-6">
-        <div className="flex items-center justify-between gap-6 mb-4">
-          <div>
-            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Total Price</div>
-            <div className="text-3xl font-semibold text-foreground tracking-tight">
-              $45<span className="text-lg text-muted-foreground">/hr</span>
+                {/* Guests */}
+                <Select value={guests} onValueChange={setGuests}>
+                  <SelectTrigger className="h-11 hover:bg-secondary/50 transition-colors">
+                    <div className="flex items-center">
+                      <Users className="mr-2 h-4 w-4 shrink-0" />
+                      <SelectValue placeholder="Musicians" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 Musician</SelectItem>
+                    <SelectItem value="2">2 Musicians</SelectItem>
+                    <SelectItem value="3">3 Musicians</SelectItem>
+                    <SelectItem value="4">4 Musicians</SelectItem>
+                    <SelectItem value="5">5+ Musicians</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Duration */}
+                <Select value={duration} onValueChange={setDuration}>
+                  <SelectTrigger className="h-11 hover:bg-secondary/50 transition-colors">
+                    <div className="flex items-center">
+                      <Clock className="mr-2 h-4 w-4 shrink-0" />
+                      <SelectValue placeholder="Duration" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 hour</SelectItem>
+                    <SelectItem value="2">2 hours</SelectItem>
+                    <SelectItem value="3">3 hours</SelectItem>
+                    <SelectItem value="4">4 hours</SelectItem>
+                    <SelectItem value="8">Full day</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Time Slots */}
+              <div>
+                <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">Available Times</h3>
+                <div className="grid grid-cols-3 md:grid-cols-4 gap-2.5">
+                  {timeSlots.map((slot) => (
+                    <Button
+                      key={slot.time}
+                      variant={selectedTime === slot.time ? "default" : "outline"}
+                      disabled={!slot.available}
+                      onClick={() => setSelectedTime(slot.time)}
+                      className={cn(
+                        "w-full h-11 font-medium transition-all",
+                        selectedTime === slot.time && "shadow-md",
+                        slot.available && selectedTime !== slot.time && "hover:border-primary/40 hover:bg-secondary/50",
+                      )}
+                    >
+                      {slot.time}
+                    </Button>
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full mt-4 h-11 bg-transparent hover:bg-secondary/50 transition-colors border-dashed"
+                  disabled={!date}
+                >
+                  🔔 Notify me if times open up
+                </Button>
+              </div>
+            </div>
+
+            {/* About Section */}
+            <div className="space-y-3 pt-2">
+              <h3 className="font-semibold text-foreground tracking-tight">About {studioName}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {studioType === "rehearsal"
+                  ? `${studioName} is a professional rehearsal space designed for musicians. Equipped with industry-standard gear and acoustically treated rooms, it's perfect for band practice, solo sessions, and creative collaboration.`
+                  : `${studioName} is a state-of-the-art recording studio offering professional audio recording, mixing, and mastering services. Our experienced engineers and premium equipment ensure the highest quality results for your music.`}
+              </p>
+            </div>
+
+            {/* Amenities */}
+            {amenities.length > 0 && (
+              <div className="space-y-4 pt-2">
+                <h3 className="font-semibold text-foreground tracking-tight">Amenities</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {amenities.map((amenity, index) => (
+                    <div key={index} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary/80 shrink-0" />
+                      <span className="leading-tight">{amenity}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Map */}
+            {mapUrl && (
+              <div className="space-y-4 pt-2">
+                <h3 className="font-semibold text-foreground tracking-tight">Location</h3>
+                <div className="aspect-video w-full rounded-xl overflow-hidden bg-muted ring-1 ring-border shadow-sm">
+                  <img src={mapUrl || "/placeholder.svg"} alt="Studio location" className="w-full h-full object-cover" />
+                </div>
+              </div>
+            )}
+
+            {/* Contact Info */}
+            <div className="space-y-4 pb-6 pt-2">
+              <h3 className="font-semibold text-foreground tracking-tight">{studioName}</h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 text-sm">
+                  <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground/80 shrink-0" />
+                  <span className="text-muted-foreground leading-relaxed">{address}</span>
+                </div>
+                {phone && (
+                  <a
+                    href={`tel:${phone}`}
+                    className="flex items-center gap-3 text-sm text-primary hover:text-primary/80 transition-colors group"
+                  >
+                    <Phone className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
+                    <span className="group-hover:underline">{phone}</span>
+                  </a>
+                )}
+                {website && (
+                  <a
+                    href={website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-sm text-primary hover:text-primary/80 transition-colors group"
+                  >
+                    <Globe className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
+                    <span className="group-hover:underline">{website}</span>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
-          <Button
-            size="lg"
-            onClick={handleBooking}
-            disabled={!date || !selectedTime}
-            className="px-10 h-12 font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
-          >
-            Book Now
-          </Button>
         </div>
-        <p className="text-xs text-center text-muted-foreground/80">
-          Powered by <span className="font-semibold text-muted-foreground">Music Traveler</span>
-        </p>
+
+        {/* Footer with Booking Button */}
+        <div className="border-t backdrop-blur-sm bg-card/95 px-8 py-6">
+          <div className="flex items-center justify-between gap-6 mb-4">
+            <div>
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Total Price</div>
+              <div className="text-3xl font-semibold text-foreground tracking-tight">
+                $45<span className="text-lg text-muted-foreground">/hr</span>
+              </div>
+            </div>
+            <Button
+              size="lg"
+              onClick={handleBooking}
+              disabled={!date || !selectedTime || !clientName || !clientEmail || isSubmitting}
+              className="px-10 h-12 font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+            >
+              {isSubmitting ? "Booking..." : "Book Now"}
+            </Button>
+          </div>
+          <p className="text-xs text-center text-muted-foreground/80">
+            Powered by <span className="font-semibold text-muted-foreground">Music Traveler</span>
+          </p>
+        </div>
       </div>
     </div>
   )

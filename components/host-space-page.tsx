@@ -88,7 +88,11 @@ export function HostSpacePage({
     const [selectedTime, setSelectedTime] = useState<string>()
     const [guests, setGuests] = useState<string>("2")
     const [duration, setDuration] = useState<string>("2")
+    const [clientName, setClientName] = useState("")
+    const [clientEmail, setClientEmail] = useState("")
+    const [clientPhone, setClientPhone] = useState("")
     const [isWishlisted, setIsWishlisted] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const timeSlots = [
         { time: "9:00 AM", available: true },
@@ -105,9 +109,48 @@ export function HostSpacePage({
         { time: "8:00 PM", available: false },
     ]
 
-    const handleBooking = () => {
-        console.log("[Host Space] Booking details:", { date, selectedTime, guests, duration })
-        alert("Booking request submitted! (This is a demo)")
+    const handleBooking = async () => {
+        if (!date || !selectedTime || !clientName || !clientEmail) {
+            alert("Please fill in all required fields")
+            return
+        }
+
+        setIsSubmitting(true)
+        try {
+            const response = await fetch("/api/bookings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    venueName: spaceName,
+                    venueType: spaceType,
+                    address: `${address}, ${city}`,
+                    clientName,
+                    clientEmail,
+                    clientPhone,
+                    date: new Date(date).toISOString().split("T")[0],
+                    time: selectedTime,
+                    duration: parseInt(duration),
+                    guests: parseInt(guests),
+                    amount: totalPrice,
+                }),
+            })
+
+            if (response.ok) {
+                alert("Booking confirmed! You'll receive a confirmation email shortly.")
+                setDate(undefined)
+                setSelectedTime(undefined)
+                setClientName("")
+                setClientEmail("")
+                setClientPhone("")
+            } else {
+                alert("Failed to create booking. Please try again.")
+            }
+        } catch (error) {
+            console.error("Error creating booking:", error)
+            alert("An error occurred. Please try again.")
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     const hourlyPrice = hourlyRate
@@ -466,6 +509,41 @@ export function HostSpacePage({
                                             <span>${totalPrice}</span>
                                         </div>
                                     </div>
+
+                                    {/* Client Info Section */}
+                                    <div className="border-t border-primary/10 pt-4 space-y-3">
+                                        <h3 className="font-semibold text-foreground text-sm">Your Information</h3>
+                                        <div>
+                                            <label className="text-sm font-medium block mb-1">Full Name *</label>
+                                            <input
+                                                type="text"
+                                                placeholder="John Doe"
+                                                value={clientName}
+                                                onChange={(e) => setClientName(e.target.value)}
+                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium block mb-1">Email *</label>
+                                            <input
+                                                type="email"
+                                                placeholder="john@example.com"
+                                                value={clientEmail}
+                                                onChange={(e) => setClientEmail(e.target.value)}
+                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium block mb-1">Phone (Optional)</label>
+                                            <input
+                                                type="tel"
+                                                placeholder="+1 (555) 000-0000"
+                                                value={clientPhone}
+                                                onChange={(e) => setClientPhone(e.target.value)}
+                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -473,10 +551,10 @@ export function HostSpacePage({
                             <Button
                                 size="lg"
                                 onClick={handleBooking}
-                                disabled={!date || !selectedTime}
+                                disabled={!date || !selectedTime || !clientName || !clientEmail || isSubmitting}
                                 className="w-full mt-6 h-12 font-semibold shadow-lg hover:shadow-xl transition-all"
                             >
-                                Reserve Now
+                                {isSubmitting ? "Reserving..." : "Reserve Now"}
                             </Button>
                             <p className="text-xs text-center text-muted-foreground mt-3">
                                 You won't be charged yet

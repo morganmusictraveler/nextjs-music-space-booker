@@ -105,6 +105,19 @@ export default function Page() {
                 </Button>
               </a>
             </div>
+
+            {/* Host Dashboard Mockup Card */}
+            <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col">
+              <h3 className="text-xl font-semibold mb-4">View Host Dashboard Mockup</h3>
+              <p className="text-muted-foreground mb-6 text-sm flex-grow">
+                Check out the host dashboard mockup for managing bookings, viewing revenue, and handling reservations.
+              </p>
+              <a href="/dashboard">
+                <Button className="w-full">
+                  Host Dashboard
+                </Button>
+              </a>
+            </div>
           </div>
         </div>
       </div>
