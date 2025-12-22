@@ -85,28 +85,62 @@ export function InquiryWidget({
         }))
     }
 
-    const handleSubmit = () => {
-        console.log("[Inquiry Widget] Form submitted:", formData)
-        alert("Inquiry submitted! We'll get back to you soon.")
-        setFormData({
-            name: "",
-            email: "",
-            phone: "",
-            eventDescription: "",
-            equipmentNeeded: "",
-            maxCapacity: "",
-            priceRange: [1000, 10000],
-            selectedDates: [],
-            requirements: {
-                publiclySellingTickets: false,
-                revenueSharing: false,
-                backlineNeeded: false,
-                audioEngineerNeeded: false,
-                lightingEngineerNeeded: false,
-                insuranceNeeded: false,
-                merchandiseToSell: false,
-            },
-        })
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch("/api/inquiries", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    venueName,
+                    venueType,
+                    address,
+                    clientName: formData.name,
+                    clientEmail: formData.email,
+                    clientPhone: formData.phone,
+                    eventDescription: formData.eventDescription,
+                    equipmentNeeded: formData.equipmentNeeded,
+                    maxCapacity: formData.maxCapacity,
+                    priceRange: formData.priceRange,
+                    selectedDates: formData.selectedDates.map(d => d.toISOString()),
+                    requirements: formData.requirements,
+                }),
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                alert("Inquiry submitted successfully! We'll review it and get back to you soon.")
+                setFormData({
+                    name: "",
+                    email: "",
+                    phone: "",
+                    eventDescription: "",
+                    equipmentNeeded: "",
+                    maxCapacity: "",
+                    priceRange: [1000, 10000],
+                    selectedDates: [],
+                    requirements: {
+                        publiclySellingTickets: false,
+                        revenueSharing: false,
+                        backlineNeeded: false,
+                        audioEngineerNeeded: false,
+                        lightingEngineerNeeded: false,
+                        insuranceNeeded: false,
+                        merchandiseToSell: false,
+                    },
+                })
+                if (onClose) {
+                    onClose()
+                }
+            } else {
+                const error = await response.json()
+                alert("Failed to submit inquiry: " + (error.error || "Unknown error"))
+            }
+        } catch (error) {
+            console.error("Error submitting inquiry:", error)
+            alert("Failed to submit inquiry. Please try again.")
+        }
     }
 
     const isFormValid = formData.name && formData.email && formData.eventDescription && formData.equipmentNeeded && formData.selectedDates.length > 0
