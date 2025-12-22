@@ -13,6 +13,7 @@ import {
     Settings,
     Menu,
     X,
+    Mail,
 } from "lucide-react"
 import { useState } from "react"
 
@@ -28,6 +29,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { href: "/dashboard/spaces", label: "My Spaces", icon: Home },
         { href: "/dashboard/bookings", label: "Bookings", icon: Calendar },
+        { href: "/dashboard/inquiries", label: "Inquiries", icon: Mail },
         { href: "#", label: "Analytics", icon: BarChart3, disabled: true },
         { href: "#", label: "Promo Codes", icon: Ticket, disabled: true },
         { href: "#", label: "Help & FAQ", icon: HelpCircle, disabled: true },
