@@ -1,28 +1,10 @@
+
 import { InquirySpacePage } from "@/components/inquiry-space-page"
+import venuedata from "@/venuedata.json"
 
-// Define possible space IDs
-type SpaceId = "house-of-strauss"
-
-// Mock data for inquiry spaces
-const inquirySpaces: Record<SpaceId, Parameters<typeof InquirySpacePage>[0]> = {
-    "house-of-strauss": {
-        venueName: "House of Strauss - Strauss Piano Room",
-        venueType: "recording",
-        address: "Gartenpalais Zögernitz, Vienna, AT 1010",
-        phone: "+43 (1) 555-0456",
-        website: "houseofstrauss.at",
-        description:
-            "Historic Viennese palace with the renovated grand piano of J. Strauss himself. A premier event and performance venue with state-of-the-art technology integrated into a meticulously preserved historic space. Perfect for inquiries about custom events, performances, and special occasions.",
-        hostName: "Dominik Joelson",
-    },
-}
-
-export default async function InquirySpaceRoute({ params }: { params: Promise<{ spaceId: string }> }) {
-    const { spaceId } = await params
-
-    const space = inquirySpaces[spaceId as SpaceId]
-
-    if (!space) {
+export default function InquirySpaceRoute({ params }: { params: { spaceId: string } }) {
+    const { spaceId } = params
+    if (spaceId !== "house-of-strauss") {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="text-center">
@@ -32,6 +14,14 @@ export default async function InquirySpaceRoute({ params }: { params: Promise<{ 
             </div>
         )
     }
-
+    const space = {
+        venueName: venuedata.name,
+        venueType: "recording",
+        address: venuedata.location?.address || "",
+        phone: "+43 (1) 555-0456",
+        website: "houseofstrauss.at",
+        description: venuedata.description,
+        hostName: "Dominik Joelson",
+    }
     return <InquirySpacePage {...space} />
 }

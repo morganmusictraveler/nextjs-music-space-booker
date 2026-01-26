@@ -12,14 +12,16 @@ import { format } from "date-fns"
 import { CalendarIcon, Music2, MapPin, Phone, Globe, X, Clock, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 
+import venuedata from "@/venuedata.json"
+
 interface BookingWidgetProps {
-  studioName: string
-  studioType: "rehearsal" | "recording"
-  address: string
+  studioName?: string
+  studioType?: "rehearsal" | "recording"
+  address?: string
   phone?: string
   website?: string
-  description: string
-  amenities: string[]
+  description?: string
+  amenities?: string[]
   mapUrl?: string
   showAsModal?: boolean
   onClose?: () => void
@@ -37,6 +39,15 @@ export function BookingWidget({
   showAsModal = true,
   onClose,
 }: BookingWidgetProps) {
+  // Use venuedata.json as fallback if props are not provided
+  const venue = venuedata
+  studioName = studioName || venue.name
+  studioType = studioType || "recording"
+  address = address || venue.location?.address || ""
+  phone = phone || "+43 (1) 555-0456"
+  website = website || "houseofstrauss.at"
+  description = description || venue.description
+  amenities = amenities || ["Windows", "WiFi", "Air Conditioning"]
   const [date, setDate] = useState<Date>()
   const [selectedTime, setSelectedTime] = useState<string>()
   const [guests, setGuests] = useState<string>("2")
@@ -109,16 +120,17 @@ export function BookingWidget({
 
   const content = (
     <div className="flex flex-col h-full max-h-[90vh] overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-8 py-6 border-b backdrop-blur-sm bg-card/95">
+      {/* Header - grand, avatar, condensed */}
+      <div className="flex items-center justify-between px-6 py-3 border-b backdrop-blur-sm bg-card/95">
         <div className="flex items-center gap-4">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-primary/10 to-accent/10 ring-1 ring-primary/10">
-            <Music2 className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">{studioName}</h2>
-            <p className="text-sm text-muted-foreground capitalize mt-0.5">{studioType} Space</p>
-          </div>
+          <img
+            src="/houseofstrauss1.jpeg"
+            alt={studioName}
+            className="w-16 h-16 rounded-full object-cover border border-primary/20 shadow-sm"
+          />
+          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground leading-tight">
+            {studioName}
+          </h2>
         </div>
         {showAsModal && onClose && (
           <Button
@@ -134,21 +146,12 @@ export function BookingWidget({
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="px-8 py-6 space-y-8">
-          {/* Need to Know Section */}
-          <Card className="p-5 bg-linear-to-br from-secondary/30 to-secondary/10 border-secondary/40 shadow-sm">
-            <h3 className="font-semibold mb-2.5 text-foreground tracking-tight">Need to Know</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {description ||
-                `Professional ${studioType} space available for booking. Please arrive 5 minutes early for setup. Cancellations must be made at least 24 hours in advance.`}
-            </p>
-          </Card>
+        <div className="px-6 py-4 space-y-6">
 
           {/* Booking Form */}
           <div className="space-y-5">
             {/* Client Info Section */}
             <div className="space-y-3 pb-4 border-b">
-              <h3 className="font-semibold text-foreground">Your Information</h3>
               <div className="space-y-3">
                 <div>
                   <Label htmlFor="name" className="text-sm mb-2 block">Full Name *</Label>
@@ -172,13 +175,14 @@ export function BookingWidget({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="phone" className="text-sm mb-2 block">Phone (Optional)</Label>
+                  <Label htmlFor="phone" className="text-sm mb-2 block">Phone/Mobile *</Label>
                   <Input
                     id="phone"
                     placeholder="+1 (555) 000-0000"
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
                     className="h-11"
+                    required
                   />
                 </div>
               </div>
@@ -187,59 +191,65 @@ export function BookingWidget({
             {/* Booking Details */}
             <div className="space-y-3">
               <h3 className="font-semibold text-foreground">Booking Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {/* Date Picker */}
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal h-11 hover:bg-secondary/50 transition-colors",
-                        !date && "text-muted-foreground",
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-                      <span className="truncate">{date ? format(date, "PPP") : "Select date"}</span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-                  </PopoverContent>
-                </Popover>
+                <div className="w-full">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal h-11 hover:bg-secondary/50 transition-colors",
+                          !date && "text-muted-foreground",
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                        <span className="truncate">{date ? format(date, "PPP") : "Select date"}</span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                    </PopoverContent>
+                  </Popover>
+                </div>
 
                 {/* Guests */}
-                <Select value={guests} onValueChange={setGuests}>
-                  <SelectTrigger className="h-11 hover:bg-secondary/50 transition-colors">
-                    <div className="flex items-center">
-                      <Users className="mr-2 h-4 w-4 shrink-0" />
-                      <SelectValue placeholder="Musicians" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 Musician</SelectItem>
-                    <SelectItem value="2">2 Musicians</SelectItem>
-                    <SelectItem value="3">3 Musicians</SelectItem>
-                    <SelectItem value="4">4 Musicians</SelectItem>
-                    <SelectItem value="5">5+ Musicians</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="w-full">
+                  <Select value={guests} onValueChange={setGuests}>
+                    <SelectTrigger className="w-full h-11 hover:bg-secondary/50 transition-colors">
+                      <div className="flex items-center">
+                        <Users className="mr-2 h-4 w-4 shrink-0" />
+                        <SelectValue placeholder="Musicians" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 Musician</SelectItem>
+                      <SelectItem value="2">2 Musicians</SelectItem>
+                      <SelectItem value="3">3 Musicians</SelectItem>
+                      <SelectItem value="4">4 Musicians</SelectItem>
+                      <SelectItem value="5">5+ Musicians</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
                 {/* Duration */}
-                <Select value={duration} onValueChange={setDuration}>
-                  <SelectTrigger className="h-11 hover:bg-secondary/50 transition-colors">
-                    <div className="flex items-center">
-                      <Clock className="mr-2 h-4 w-4 shrink-0" />
-                      <SelectValue placeholder="Duration" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 hour</SelectItem>
-                    <SelectItem value="2">2 hours</SelectItem>
-                    <SelectItem value="3">3 hours</SelectItem>
-                    <SelectItem value="4">4 hours</SelectItem>
-                    <SelectItem value="8">Full day</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="w-full">
+                  <Select value={duration} onValueChange={setDuration}>
+                    <SelectTrigger className="w-full h-11 hover:bg-secondary/50 transition-colors">
+                      <div className="flex items-center">
+                        <Clock className="mr-2 h-4 w-4 shrink-0" />
+                        <SelectValue placeholder="Duration" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 hour</SelectItem>
+                      <SelectItem value="2">2 hours</SelectItem>
+                      <SelectItem value="3">3 hours</SelectItem>
+                      <SelectItem value="4">4 hours</SelectItem>
+                      <SelectItem value="8">Full day</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* Time Slots */}
@@ -262,13 +272,6 @@ export function BookingWidget({
                     </Button>
                   ))}
                 </div>
-                <Button
-                  variant="outline"
-                  className="w-full mt-4 h-11 bg-transparent hover:bg-secondary/50 transition-colors border-dashed"
-                  disabled={!date}
-                >
-                  🔔 Notify me if times open up
-                </Button>
               </div>
             </div>
 
@@ -307,60 +310,30 @@ export function BookingWidget({
               </div>
             )}
 
-            {/* Contact Info */}
-            <div className="space-y-4 pb-6 pt-2">
-              <h3 className="font-semibold text-foreground tracking-tight">{studioName}</h3>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3 text-sm">
-                  <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground/80 shrink-0" />
-                  <span className="text-muted-foreground leading-relaxed">{address}</span>
-                </div>
-                {phone && (
-                  <a
-                    href={`tel:${phone}`}
-                    className="flex items-center gap-3 text-sm text-primary hover:text-primary/80 transition-colors group"
-                  >
-                    <Phone className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="group-hover:underline">{phone}</span>
-                  </a>
-                )}
-                {website && (
-                  <a
-                    href={website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-primary hover:text-primary/80 transition-colors group"
-                  >
-                    <Globe className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="group-hover:underline">{website}</span>
-                  </a>
-                )}
-              </div>
-            </div>
+
           </div>
         </div>
 
-        {/* Footer with Booking Button */}
-        <div className="border-t backdrop-blur-sm bg-card/95 px-8 py-6">
-          <div className="flex items-center justify-between gap-6 mb-4">
-            <div>
-              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Total Price</div>
-              <div className="text-3xl font-semibold text-foreground tracking-tight">
-                $45<span className="text-lg text-muted-foreground">/hr</span>
-              </div>
-            </div>
-            <Button
-              size="lg"
-              onClick={handleBooking}
-              disabled={!date || !selectedTime || !clientName || !clientEmail || isSubmitting}
-              className="px-10 h-12 font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
-            >
-              {isSubmitting ? "Booking..." : "Book Now"}
-            </Button>
+        {/* Footer with Booking Button and Music Traveler logo */}
+        <div className="border-t backdrop-blur-sm bg-card/95 px-6 py-4">
+          <Button
+            size="lg"
+            onClick={handleBooking}
+              disabled={!date || !selectedTime || !clientName || !clientEmail || !clientPhone || isSubmitting}
+            className="w-full px-8 h-12 font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 mb-2"
+          >
+            {isSubmitting ? "Booking..." : "Book Now"}
+          </Button>
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <span className="text-xs text-muted-foreground">Powered by</span>
+            <a href="https://musictraveler.com" target="_blank" rel="noopener noreferrer">
+              <img
+                src="https://d1r3culteut8k2.cloudfront.net/static/images/mt_logo_jan_2018_blue_512.png"
+                alt="Music Traveler"
+                className="h-6"
+              />
+            </a>
           </div>
-          <p className="text-xs text-center text-muted-foreground/80">
-            Powered by <span className="font-semibold text-muted-foreground">Music Traveler</span>
-          </p>
         </div>
       </div>
     </div>
@@ -368,7 +341,7 @@ export function BookingWidget({
 
   if (showAsModal) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/10 animate-in fade-in duration-200">
         <Card className="w-full max-w-3xl shadow-2xl border-border/50 animate-in zoom-in-95 duration-200">
           {content}
         </Card>

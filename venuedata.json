@@ -1,0 +1,186 @@
+{
+    "createdAt": "2025-12-15T11:03:18.902Z",
+    "updatedAt": "2025-12-15T11:03:18.902Z",
+    "legacy_id": 3461,
+    "name": "House of Strauss - Strauss Piano Room",
+    "title": "House of Strauss - Strauss Piano Room",
+    "description": "The venue is located inside the museum and includes the renovated grand piano of J. Strauss himself. \r\n\r\nThe Gartenpalais Zögernitz, a true jewel of Viennese architecture, has been captivating since its opening on July 21, 1837, with its picturesque garden and impressive ballroom. \r\n\r\nIt quickly became a central meeting point for Vienna's high society and has hosted many illustrious guests and events over the years. \r\n\r\nCelebrities such as Carl Michael Ziehrer, Joseph Lanner, and even Johann Strauss Sr. and Jr. have held unforgettable balls within these historic walls, capturing the hearts of the people of Vienna. \r\n\r\nAfter a careful and comprehensive renovation completed in 2022, the palace now stands in all its glory. With great attention to detail, the historical substance was preserved and state-of-the-art technology was integrated to offer visitors a unique experience. The palace has once again established itself as a premier event venue, regularly hosting cultural, musical, and social events. \r\n\r\nFor those wishing to learn more about its rich history, current events, or the possibility of hosting its events at Gartenpalais Zögernitz, the official website is available. A click on the following link will take you directly there, providing a deeper insight into this impressive cultural heritage of Vienna.",
+    "rating": 0,
+    "size": 70,
+    "capacity": 10,
+    "images": [
+        {
+            "image": {
+                "createdAt": "2025-12-15T11:03:15.051Z",
+                "updatedAt": "2025-12-15T11:03:15.051Z",
+                "alt": "3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg",
+                "original_filename": "3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg",
+                "legacy_s3_key": "attachments/room_room/3461/3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg",
+                "path_segments": [
+                    "media",
+                    "listings"
+                ],
+                "filename": "3Y2Wnavj4_7-.jpeg",
+                "mimeType": "image/jpeg",
+                "filesize": 337571,
+                "width": 1920,
+                "height": 1281,
+                "focalX": 50,
+                "focalY": 50,
+                "id": "693feaf3367ba0b4e3a8c406",
+                "url": "/api/media/file/3Y2Wnavj4_7-.jpeg",
+                "thumbnailURL": "https://staging.musictraveler.com/cdn-cgi/image/width=256,height=256,fit=cover,quality=90,format=webp/undefined"
+            },
+            "is_primary": true,
+            "id": "693feaf637663a5aee4e7a67"
+        },
+        {
+            "image": {
+                "createdAt": "2025-12-15T11:03:16.632Z",
+                "updatedAt": "2025-12-15T11:03:16.632Z",
+                "alt": "aeabc8225dcd9aeb09125ce2fbea4808ef46c58c-1080x1440_a563.jpeg",
+                "original_filename": "aeabc8225dcd9aeb09125ce2fbea4808ef46c58c-1080x1440_a563.jpeg",
+                "legacy_s3_key": "attachments/room_room/3461/aeabc8225dcd9aeb09125ce2fbea4808ef46c58c-1080x1440_a563.jpeg",
+                "path_segments": [
+                    "media",
+                    "listings"
+                ],
+                "filename": "gkYjwzuQPKJA.jpeg",
+                "mimeType": "image/jpeg",
+                "filesize": 245872,
+                "width": 1280,
+                "height": 1707,
+                "focalX": 50,
+                "focalY": 50,
+                "id": "693feaf4367ba0b4e3a8c40c",
+                "url": "/api/media/file/gkYjwzuQPKJA.jpeg",
+                "thumbnailURL": "https://staging.musictraveler.com/cdn-cgi/image/width=256,height=256,fit=cover,quality=90,format=webp/undefined"
+            },
+            "is_primary": false,
+            "id": "693feaf637663a5aee4e7a68"
+        },
+        {
+            "image": {
+                "createdAt": "2025-12-15T11:03:18.742Z",
+                "updatedAt": "2025-12-15T11:03:18.743Z",
+                "alt": "157a35d3e46e6d0ef5a69b24ddd9b4977a1eff0c-1080x1440_26a6.jpeg",
+                "original_filename": "157a35d3e46e6d0ef5a69b24ddd9b4977a1eff0c-1080x1440_26a6.jpeg",
+                "legacy_s3_key": "attachments/room_room/3461/157a35d3e46e6d0ef5a69b24ddd9b4977a1eff0c-1080x1440_26a6.jpeg",
+                "path_segments": [
+                    "media",
+                    "listings"
+                ],
+                "filename": "6lIvnrYbYpgE.jpeg",
+                "mimeType": "image/jpeg",
+                "filesize": 208852,
+                "width": 1280,
+                "height": 1707,
+                "focalX": 50,
+                "focalY": 50,
+                "id": "693feaf6367ba0b4e3a8c412",
+                "url": "/api/media/file/6lIvnrYbYpgE.jpeg",
+                "thumbnailURL": "https://staging.musictraveler.com/cdn-cgi/image/width=256,height=256,fit=cover,quality=90,format=webp/undefined"
+            },
+            "is_primary": false,
+            "id": "693feaf637663a5aee4e7a69"
+        }
+    ],
+    "location": {
+        "createdAt": "2025-12-15T06:53:25.765Z",
+        "updatedAt": "2025-12-15T06:53:25.765Z",
+        "legacy_id": 2911,
+        "name": "Döblinger Hauptstraße 76, 1190 Wien, Austria",
+        "type": [
+            "Hall"
+        ],
+        "description": {
+            "root": {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "detail": 0,
+                                "format": 0,
+                                "mode": "normal",
+                                "style": "",
+                                "text": "The Gartenpalais Zögernitz, a true jewel of Viennese architecture, has been captivating since its opening on July 21, 1837, with its picturesque garden and impressive ballroom. It quickly became a central meeting point for Vienna's high society and has hosted many illustrious guests and events over the years. Celebrities such as Carl Michael Ziehrer, Joseph Lanner, and even Johann Strauss Sr. and Jr. have held unforgettable balls within these historic walls, capturing the hearts of the people of Vienna.\r\n\r\nAfter a careful and comprehensive renovation completed in 2022, the palace now stands in all its glory. With great attention to detail, the historical substance was preserved and state-of-the-art technology integrated to offer visitors a unique experience. The palace has once again established itself as a premier event venue, regularly hosting cultural, musical, and social events.\r\n\r\nFor those wishing to learn more about its rich history, current events, or the possibilities of hosting their own events at Gartenpalais Zögernitz, the official website is available. A click on the following link will take you directly there, providing a deeper insight into this impressive cultural heritage of Vienna.",
+                                "type": "text",
+                                "version": 1
+                            }
+                        ],
+                        "direction": "ltr",
+                        "format": "",
+                        "indent": 0,
+                        "type": "paragraph",
+                        "version": 1
+                    }
+                ],
+                "direction": "ltr",
+                "format": "",
+                "indent": 0,
+                "type": "root",
+                "version": 1
+            }
+        },
+        "place": {
+            "createdAt": "2025-12-14T14:16:17.302Z",
+            "updatedAt": "2025-12-14T14:16:17.302Z",
+            "name": "Wien",
+            "slug": "wien",
+            "admin_status": "published",
+            "type": "city",
+            "status_code": "1",
+            "ancestors": [],
+            "id": "693ec6b1c8f6c9d1b78f210d"
+        },
+        "address": "Döblinger Hauptstraße 76, 1190 Wien, Austria",
+        "point": {
+            "type": "Point",
+            "coordinates": [
+                16.3555579,
+                48.2402296
+            ]
+        },
+        "business_hours": "M-F 8:00-21:00",
+        "owner": "693fa589379ea6ecca26cb21",
+        "is_active": true,
+        "deleted": false,
+        "bookable": true,
+        "id": "693fb0655466ba85e9c7c02f",
+        "images": []
+    },
+    "host": "693fa589379ea6ecca26cb21",
+    "status": "active",
+    "rules": "No smoking",
+    "cancellation_policy": 24,
+    "is_visible": true,
+    "deleted": false,
+    "bookable": true,
+    "days_of_notice": 0,
+    "booking_advance": 3,
+    "stripe_account": {},
+    "availability": {
+        "calendar_sync": {
+            "sync_enabled": false
+        },
+        "booking_type": "inquire",
+        "advance_booking_days": 30,
+        "same_day_booking": false
+    },
+    "pricing": {
+        "base_price": 0,
+        "currency": "EUR",
+        "weekend_pricing": {
+            "enabled": false,
+            "weekend_multiplier": 1.5
+        }
+    },
+    "venue_stats": {
+        "total_bookings": 0,
+        "total_revenue": 0,
+        "average_rating": 0,
+        "occupancy_rate": 0
+    },
+    "id": "693feaf6367ba0b4e3a8c414",
+    "is_featured": false
+}

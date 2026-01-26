@@ -4,11 +4,14 @@ import { useState } from "react"
 import { BookingWidget } from "@/components/booking-widget"
 import { InquiryWidget } from "@/components/inquiry-widget"
 import { Button } from "@/components/ui/button"
+import venuedata from "@/venuedata.json"
 
 export default function Page() {
   const [showWidget, setShowWidget] = useState(false)
   const [showInquiryWidget, setShowInquiryWidget] = useState(false)
 
+  // Use venuedata.json for all venue info
+  const venue = venuedata
   return (
     <div className="min-h-screen bg-background">
       {/* Demo Page Header */}
@@ -37,9 +40,9 @@ export default function Page() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80" />
           <div className="relative container mx-auto px-4 h-full flex flex-col justify-center">
             <div className="max-w-2xl">
-              <h2 className="text-5xl font-bold text-white mb-4 text-balance">House of Strauss - Strauss Piano Room</h2>
+              <h2 className="text-5xl font-bold text-white mb-4 text-balance">{venue.name}</h2>
               <p className="text-xl text-white/90 mb-8 text-pretty">
-                Historic Viennese palace with the renovated grand piano of J. Strauss himself
+                {venue.description?.split(". ")[0]}
               </p>
             </div>
           </div>
@@ -67,6 +70,7 @@ export default function Page() {
               <Button onClick={() => setShowWidget(true)} className="w-full">
                 Open Booking Widget
               </Button>
+              {showWidget && <BookingWidget showAsModal={true} onClose={() => setShowWidget(false)} />}
             </div>
 
             {/* Inquiry Widget Demo Card */}
@@ -78,24 +82,25 @@ export default function Page() {
               <Button onClick={() => setShowInquiryWidget(true)} className="w-full">
                 Open Inquiry Widget
               </Button>
+              {showInquiryWidget && <InquiryWidget showAsModal={true} onClose={() => setShowInquiryWidget(false)} />}
             </div>
 
             {/* Booking Page Mockup Card */}
             <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col">
-              <h3 className="text-xl font-semibold mb-4">View Booking Page Mockup</h3>
+              <h3 className="text-xl font-semibold mb-4">View Booking Page</h3>
               <p className="text-muted-foreground mb-6 text-sm flex-grow">
                 Check out the full-page booking design that's perfect for marketing and detailed listings.
               </p>
               <a href="/host/house-of-strauss">
                 <Button className="w-full">
-                  House of Strauss - Booking Page (Vienna)
+                  {venue.name} Booking Page
                 </Button>
               </a>
             </div>
 
             {/* Inquiry Page Mockup Card */}
             <div className="p-8 bg-primary/5 rounded-lg border border-primary/20 flex flex-col">
-              <h3 className="text-xl font-semibold mb-4">View Inquiry Page Mockup</h3>
+              <h3 className="text-xl font-semibold mb-4">View Inquiry Page</h3>
               <p className="text-muted-foreground mb-6 text-sm flex-grow">
                 Check out the full-page inquiry design for upon-request booking experiences.
               </p>
