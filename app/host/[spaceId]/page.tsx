@@ -5,6 +5,8 @@ import { HostSpacePage } from "@/components/host-space-page"
 import venuedata from "@/venuedata.json"
 
 function mapVenueDataToHostSpacePage(venue: any) {
+  // Always use the static image from the public folder
+  const imageUrl = "/houseofstrauss1.jpeg"
   return {
     spaceId: "house-of-strauss",
     hostName: "Dominik Joelson",
@@ -25,15 +27,13 @@ function mapVenueDataToHostSpacePage(venue: any) {
     reviews: [],
     rating: venue.venue_stats?.average_rating || 0,
     reviewCount: venue.venue_stats?.total_bookings || 0,
-    imageUrl: venue.images?.[0]?.image?.url
-      ? `https://d1r3culteut8k2.cloudfront.net/${venue.images[0].image.legacy_s3_key}`
-      : undefined,
+    imageUrl,
     hourlyRate: venue.pricing?.base_price || 0,
   }
 }
 
-export default function HostSpaceRoute({ params }: { params: { spaceId: string } }) {
-    const { spaceId } = params
+export default async function HostSpaceRoute({ params }: { params: Promise<{ spaceId: string }> }) {
+  const { spaceId } = await params
     // Only one venue for now, but could be extended for multiple
     if (spaceId !== "house-of-strauss") {
         return (

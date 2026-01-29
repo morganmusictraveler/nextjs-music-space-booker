@@ -2,8 +2,8 @@
 import { InquirySpacePage } from "@/components/inquiry-space-page"
 import venuedata from "@/venuedata.json"
 
-export default function InquirySpaceRoute({ params }: { params: { spaceId: string } }) {
-    const { spaceId } = params
+export default async function InquirySpaceRoute({ params }: { params: Promise<{ spaceId: string }> }) {
+    const { spaceId } = await params
     if (spaceId !== "house-of-strauss") {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
