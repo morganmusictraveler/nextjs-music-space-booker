@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { TimeslotButton } from "@/components/ui/timeslot-button"
 import { format } from "date-fns"
 import { CalendarIcon, Music2, MapPin, Phone, Globe, X, Clock, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -49,7 +50,7 @@ export function BookingWidget({
   description = description || venue.description
   amenities = amenities || ["Windows", "WiFi", "Air Conditioning"]
   const [date, setDate] = useState<Date>()
-  const [selectedTime, setSelectedTime] = useState<string>()
+  const [selectedTimes, setSelectedTimes] = useState<string[]>([])
   const [guests, setGuests] = useState<string>("2")
   const [duration, setDuration] = useState<string>("2")
   const [clientName, setClientName] = useState("")
@@ -57,24 +58,30 @@ export function BookingWidget({
   const [clientPhone, setClientPhone] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Generate time slots
+  // Generate time slots with pricing
   const timeSlots = [
-    { time: "9:00 AM", available: true },
-    { time: "10:00 AM", available: true },
-    { time: "11:00 AM", available: false },
-    { time: "12:00 PM", available: true },
-    { time: "1:00 PM", available: true },
-    { time: "2:00 PM", available: true },
-    { time: "3:00 PM", available: false },
-    { time: "4:00 PM", available: true },
-    { time: "5:00 PM", available: true },
-    { time: "6:00 PM", available: true },
-    { time: "7:00 PM", available: true },
-    { time: "8:00 PM", available: false },
+    { time: "9:00", displayTime: "09:00", price: 40, available: true },
+    { time: "10:00", displayTime: "10:00", price: 40, available: true },
+    { time: "11:00", displayTime: "11:00", price: 40, available: false },
+    { time: "12:00", displayTime: "12:00", price: 40, available: true },
+    { time: "13:00", displayTime: "13:00", price: 40, available: true },
+    { time: "14:00", displayTime: "14:00", price: 40, available: true },
+    { time: "15:00", displayTime: "15:00", price: 40, available: false },
+    { time: "16:00", displayTime: "16:00", price: 40, available: true },
+    { time: "17:00", displayTime: "17:00", price: 35, available: true },
+    { time: "18:00", displayTime: "18:00", price: 35, available: true },
+    { time: "19:00", displayTime: "19:00", price: 35, available: true },
+    { time: "20:00", displayTime: "20:00", price: 35, available: false },
   ]
 
+  const toggleTimeSlot = (time: string) => {
+    setSelectedTimes((prev) =>
+      prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time]
+    )
+  }
+
   const handleBooking = async () => {
-    if (!date || !selectedTime || !clientName || !clientEmail) {
+    if (!date || selectedTimes.length === 0 || !clientName || !clientEmail) {
       alert("Please fill in all required fields")
       return
     }
@@ -92,17 +99,20 @@ export function BookingWidget({
           clientEmail,
           clientPhone,
           date: format(date, "yyyy-MM-dd"),
-          time: selectedTime,
+          times: selectedTimes,
           duration: parseInt(duration),
           guests: parseInt(guests),
-          amount: 45 * parseInt(duration),
+          amount: selectedTimes.reduce((total, time) => {
+            const slot = timeSlots.find(s => s.time === time)
+            return total + (slot?.price || 0)
+          }, 0),
         }),
       })
 
       if (response.ok) {
         alert("Booking confirmed! You'll receive a confirmation email shortly.")
         setDate(undefined)
-        setSelectedTime(undefined)
+        setSelectedTimes([])
         setClientName("")
         setClientEmail("")
         setClientPhone("")
@@ -257,19 +267,13 @@ export function BookingWidget({
                 <h3 className="text-sm font-semibold mb-4 text-foreground tracking-tight">Available Times</h3>
                 <div className="grid grid-cols-3 md:grid-cols-4 gap-2.5">
                   {timeSlots.map((slot) => (
-                    <Button
+                    <TimeslotButton
                       key={slot.time}
-                      variant={selectedTime === slot.time ? "default" : "outline"}
-                      disabled={!slot.available}
-                      onClick={() => setSelectedTime(slot.time)}
-                      className={cn(
-                        "w-full h-11 font-medium transition-all",
-                        selectedTime === slot.time && "shadow-md",
-                        slot.available && selectedTime !== slot.time && "hover:border-primary/40 hover:bg-secondary/50",
-                      )}
-                    >
-                      {slot.time}
-                    </Button>
+                      time={`${slot.displayTime} | €${slot.price.toFixed(2)}`}
+                      available={slot.available}
+                      selected={selectedTimes.includes(slot.time)}
+                      onClick={() => toggleTimeSlot(slot.time)}
+                    />
                   ))}
                 </div>
               </div>
@@ -319,7 +323,7 @@ export function BookingWidget({
           <Button
             size="lg"
             onClick={handleBooking}
-              disabled={!date || !selectedTime || !clientName || !clientEmail || !clientPhone || isSubmitting}
+              disabled={!date || selectedTimes.length === 0 || !clientName || !clientEmail || !clientPhone || isSubmitting}
             className="w-full px-8 h-12 font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 mb-2"
           >
             {isSubmitting ? "Booking..." : "Book Now"}
