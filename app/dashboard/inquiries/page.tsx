@@ -22,7 +22,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Calendar, Mail, Phone, Music2, Trash2 } from "lucide-react"
 import { format } from "date-fns"
 import {
     Popover,
@@ -257,7 +256,7 @@ export default function InquiriesPage() {
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <div className="flex items-center gap-3 mb-2">
-                                            <Music2 className="w-5 h-5 text-primary" />
+                                            <i className="fa-regular fa-music w-5 h-5 text-primary" />
                                             <h3 className="text-lg font-semibold text-gray-900">
                                                 {inquiry.clientName}
                                             </h3>
@@ -273,7 +272,7 @@ export default function InquiriesPage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* Dates */}
                                     <div className="flex items-start gap-3">
-                                        <Calendar className="w-4 h-4 text-gray-400 mt-1" />
+                                        <i className="fa-regular fa-calendar w-4 h-4 text-gray-400 mt-1" />
                                         <div>
                                             <p className="text-xs text-gray-500 font-medium uppercase">Dates</p>
                                             <p className="text-sm text-gray-900">
@@ -298,14 +297,14 @@ export default function InquiriesPage() {
                                 {/* Contact Info */}
                                 <div className="flex flex-wrap gap-4 pt-2 border-t">
                                     <div className="flex items-center gap-2">
-                                        <Mail className="w-4 h-4 text-gray-400" />
+                                        <i className="fa-regular fa-envelope w-4 h-4 text-gray-400" />
                                         <a href={`mailto:${inquiry.clientEmail}`} className="text-sm text-blue-600 hover:underline">
                                             {inquiry.clientEmail}
                                         </a>
                                     </div>
                                     {inquiry.clientPhone && (
                                         <div className="flex items-center gap-2">
-                                            <Phone className="w-4 h-4 text-gray-400" />
+                                            <i className="fa-regular fa-phone w-4 h-4 text-gray-400" />
                                             <a href={`tel:${inquiry.clientPhone}`} className="text-sm text-blue-600 hover:underline">
                                                 {inquiry.clientPhone}
                                             </a>
@@ -506,7 +505,7 @@ export default function InquiriesPage() {
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <Button variant="outline" className="w-full justify-start">
-                                            <Calendar className="mr-2 h-4 w-4" />
+                                            <i className="fa-regular fa-calendar mr-2 h-4 w-4" />
                                             Add Alternative Dates
                                         </Button>
                                     </PopoverTrigger>
@@ -557,7 +556,7 @@ export default function InquiriesPage() {
                                                         }}
                                                         className="ml-1 hover:text-blue-900"
                                                     >
-                                                        <Trash2 className="h-3 w-3" />
+                                                        <i className="fa-regular fa-trash h-3 w-3" />
                                                     </button>
                                                 </div>
                                             ))}

@@ -2,7 +2,6 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Copy } from "lucide-react"
 
 export function EmbedCodeExample() {
   const embedCode = `<!-- Add this script to your website -->
@@ -25,7 +24,7 @@ export function EmbedCodeExample() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Embed Code</h3>
         <Button variant="outline" size="sm" onClick={copyToClipboard}>
-          <Copy className="w-4 h-4 mr-2" />
+          <i className="fa-regular fa-copy w-4 h-4 mr-2" />
           Copy Code
         </Button>
       </div>

@@ -9,25 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
-import {
-    CalendarIcon,
-    Music2,
-    MapPin,
-    Phone,
-    Globe,
-    Star,
-    Users,
-    Clock,
-    Award,
-    Volume2,
-    Zap,
-    Shield,
-    Heart,
-    Share2,
-    ChevronRight,
-    MessageCircle,
-    User,
-} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface HostSpacePageProps {
@@ -223,7 +204,7 @@ export function HostSpacePage({
                                 Book {spaceName}
                             </h1>
                             <p className="text-xl text-white/90 flex items-center gap-2">
-                                <MapPin className="w-5 h-5 shrink-0" />
+                                <i className="fa-solid fa-location-dot w-5 h-5 shrink-0" />
                                 {city}, {state}
                             </p>
                         </div>
@@ -242,21 +223,21 @@ export function HostSpacePage({
                     <div className="grid grid-cols-3 gap-4">
                         <Card className="p-6 text-center hover:shadow-md transition-shadow">
                             <div className="flex justify-center mb-3">
-                                <Music2 className="w-6 h-6 text-primary" />
+                                <i className="fa-solid fa-music w-6 h-6 text-primary" />
                             </div>
                             <div className="text-2xl font-bold capitalize">{spaceType}</div>
                             <p className="text-sm text-muted-foreground mt-1">Space</p>
                         </Card>
                         <Card className="p-6 text-center hover:shadow-md transition-shadow">
                             <div className="flex justify-center mb-3">
-                                <User className="w-6 h-6 text-primary" />
+                                <i className="fa-solid fa-user w-6 h-6 text-primary" />
                             </div>
                             <div className="text-2xl font-bold">{hostName}</div>
                             <p className="text-sm text-muted-foreground mt-1">Your host</p>
                         </Card>
                         <Card className="p-6 text-center hover:shadow-md transition-shadow">
                             <div className="flex justify-center mb-3">
-                                <Award className="w-6 h-6 text-primary" />
+                                <i className="fa-solid fa-award w-6 h-6 text-primary" />
                             </div>
                             <div className="text-2xl font-bold">{reviewCount}+</div>
                             <p className="text-sm text-muted-foreground mt-1">Happy Guests</p>
@@ -290,7 +271,7 @@ export function HostSpacePage({
                                     <Card key={index} className="p-4 flex items-start gap-3 hover:shadow-md transition-shadow">
                                         <div className="flex-shrink-0 mt-0.5">
                                             <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary/10">
-                                                <Zap className="h-4 w-4 text-primary" />
+                                                <i className="fa-solid fa-bolt h-4 w-4 text-primary" />
                                             </div>
                                         </div>
                                         <div className="flex-1">
@@ -309,7 +290,7 @@ export function HostSpacePage({
                                         <Card key={index} className="p-4 flex items-start gap-3 hover:shadow-md transition-shadow">
                                             <div className="flex-shrink-0 mt-0.5">
                                                 <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-accent/10">
-                                                    <Volume2 className="h-4 w-4 text-accent" />
+                                                    <i className="fa-solid fa-volume-up h-4 w-4 text-accent" />
                                                 </div>
                                             </div>
                                             <div className="flex-1">
@@ -356,11 +337,11 @@ export function HostSpacePage({
                                                 <div className="flex items-center gap-2 mt-1">
                                                     <div className="flex gap-1">
                                                         {[...Array(5)].map((_, i) => (
-                                                            <Star
+                                                            <i
                                                                 key={i}
                                                                 className={cn(
-                                                                    "w-4 h-4",
-                                                                    i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted/30",
+                                                                    "fa-star w-4 h-4",
+                                                                    i < review.rating ? "fa-solid text-yellow-400" : "fa-regular text-muted/30",
                                                                 )}
                                                             />
                                                         ))}
@@ -389,7 +370,7 @@ export function HostSpacePage({
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex items-start gap-3">
-                                    <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                                    <i className="fa-solid fa-location-dot w-5 h-5 text-primary shrink-0 mt-0.5" />
                                     <div>
                                         <p className="font-medium">{address}</p>
                                         <p className="text-muted-foreground">
@@ -429,7 +410,7 @@ export function HostSpacePage({
                                                         !date && "text-muted-foreground",
                                                     )}
                                                 >
-                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    <i className="fa-regular fa-calendar mr-2 h-4 w-4" />
                                                     {date ? format(date, "MMM dd, yyyy") : "Pick a date"}
                                                 </Button>
                                             </PopoverTrigger>
@@ -445,7 +426,7 @@ export function HostSpacePage({
                                         <Select value={duration} onValueChange={setDuration}>
                                             <SelectTrigger className="h-11">
                                                 <div className="flex items-center">
-                                                    <Clock className="mr-2 h-4 w-4" />
+                                                    <i className="fa-regular fa-clock mr-2 h-4 w-4" />
                                                     <SelectValue />
                                                 </div>
                                             </SelectTrigger>
@@ -465,7 +446,7 @@ export function HostSpacePage({
                                         <Select value={guests} onValueChange={setGuests}>
                                             <SelectTrigger className="h-11">
                                                 <div className="flex items-center">
-                                                    <Users className="mr-2 h-4 w-4" />
+                                                    <i className="fa-solid fa-users mr-2 h-4 w-4" />
                                                     <SelectValue />
                                                 </div>
                                             </SelectTrigger>
@@ -564,7 +545,7 @@ export function HostSpacePage({
                         {/* Contact Card */}
                         <Card className="p-6 space-y-4">
                             <h3 className="font-semibold flex items-center gap-2">
-                                <MessageCircle className="w-4 h-4" />
+                                <i className="fa-regular fa-message w-4 h-4" />
                                 Contact {hostName}
                             </h3>
                             <div className="space-y-3">
@@ -573,7 +554,7 @@ export function HostSpacePage({
                                         href={`tel:${phone}`}
                                         className="flex items-center gap-3 p-3 rounded-lg bg-muted hover:bg-muted/80 transition-colors group"
                                     >
-                                        <Phone className="w-4 h-4 text-primary" />
+                                        <i className="fa-regular fa-phone w-4 h-4 text-primary" />
                                         <span className="text-sm font-medium group-hover:underline">{phone}</span>
                                     </a>
                                 )}
@@ -582,7 +563,7 @@ export function HostSpacePage({
                                         href={`mailto:${email}`}
                                         className="flex items-center gap-3 p-3 rounded-lg bg-muted hover:bg-muted/80 transition-colors group"
                                     >
-                                        <MessageCircle className="w-4 h-4 text-primary" />
+                                        <i className="fa-regular fa-message w-4 h-4 text-primary" />
                                         <span className="text-sm font-medium group-hover:underline">Message</span>
                                     </a>
                                 )}
@@ -593,7 +574,7 @@ export function HostSpacePage({
                                         rel="noopener noreferrer"
                                         className="flex items-center gap-3 p-3 rounded-lg bg-muted hover:bg-muted/80 transition-colors group"
                                     >
-                                        <Globe className="w-4 h-4 text-primary" />
+                                        <i className="fa-regular fa-globe w-4 h-4 text-primary" />
                                         <span className="text-sm font-medium group-hover:underline">Visit Website</span>
                                     </a>
                                 )}
@@ -603,7 +584,7 @@ export function HostSpacePage({
                         {/* Safety Card */}
                         <Card className="p-6 bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-200/50 dark:border-green-800/50">
                             <div className="flex items-start gap-3">
-                                <Shield className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
+                                <i className="fa-regular fa-shield w-5 h-5 text-green-600 shrink-0 mt-0.5" />
                                 <div className="space-y-2">
                                     <p className="font-semibold text-sm">Trust & Safety</p>
                                     <p className="text-xs text-muted-foreground">

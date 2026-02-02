@@ -22,7 +22,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Download } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 
 interface Booking {
@@ -182,7 +181,7 @@ export default function BookingsPage() {
                         </SelectContent>
                     </Select>
                     <Button onClick={handleExport} className="gap-2">
-                        <Download className="w-4 h-4" />
+                        <i className="fa-regular fa-download w-4 h-4" />
                         Export
                     </Button>
                 </div>

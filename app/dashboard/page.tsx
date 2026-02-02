@@ -5,7 +5,6 @@ import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { DollarSign, Calendar, Star, TrendingUp, Mail } from "lucide-react"
 
 interface Booking {
     _id: string
@@ -34,28 +33,28 @@ const metrics = [
     {
         label: "Total Revenue",
         value: "$0",
-        icon: DollarSign,
+        icon: "fa-dollar-sign",
         color: "text-green-600",
         key: "revenue",
     },
     {
         label: "Total Bookings",
         value: "0",
-        icon: Calendar,
+        icon: "fa-calendar",
         color: "text-blue-600",
         key: "bookings",
     },
     {
         label: "Pending Inquiries",
         value: "0",
-        icon: Mail,
+        icon: "fa-envelope",
         color: "text-purple-600",
         key: "inquiries",
     },
     {
         label: "Occupancy Rate",
         value: "78%",
-        icon: TrendingUp,
+        icon: "fa-arrow-trend-up",
         color: "text-emerald-600",
         key: "occupancy",
     },
@@ -144,7 +143,6 @@ export default function DashboardPage() {
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 {metrics.map((metric) => {
-                    const Icon = metric.icon
                     const displayValue =
                         metric.key === "revenue"
                             ? metrics_data.revenue
@@ -161,7 +159,7 @@ export default function DashboardPage() {
                                     <p className="text-sm text-gray-600 mb-1">{metric.label}</p>
                                     <p className="text-2xl font-bold text-gray-900">{displayValue}</p>
                                 </div>
-                                <Icon className={`w-8 h-8 ${metric.color} opacity-20`} />
+                                <i className={`fa-regular ${metric.icon} w-8 h-8 ${metric.color} opacity-20`} />
                             </div>
                         </Card>
                     )
