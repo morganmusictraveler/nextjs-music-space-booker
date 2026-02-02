@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { TextInput } from "@/components/ui/text-input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
@@ -165,33 +165,30 @@ export function BookingWidget({
               <div className="space-y-3">
                 <div>
                   <Label htmlFor="name" className="text-sm mb-2 block">Full Name *</Label>
-                  <Input
+                  <TextInput
                     id="name"
                     placeholder="John Doe"
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
-                    className="h-11"
                   />
                 </div>
                 <div>
                   <Label htmlFor="email" className="text-sm mb-2 block">Email *</Label>
-                  <Input
+                  <TextInput
                     id="email"
                     type="email"
                     placeholder="john@example.com"
                     value={clientEmail}
                     onChange={(e) => setClientEmail(e.target.value)}
-                    className="h-11"
                   />
                 </div>
                 <div>
                   <Label htmlFor="phone" className="text-sm mb-2 block">Phone/Mobile *</Label>
-                  <Input
+                  <TextInput
                     id="phone"
                     placeholder="+1 (555) 000-0000"
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
-                    className="h-11"
                     required
                   />
                 </div>

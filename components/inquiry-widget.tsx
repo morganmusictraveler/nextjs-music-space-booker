@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { TextInput } from "@/components/ui/text-input"
+import { TextArea } from "@/components/ui/text-area"
 import { Label } from "@/components/ui/label"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -201,13 +201,12 @@ export function InquiryWidget({
                             <Label htmlFor="name" className="text-sm font-medium">
                                 Your Name *
                             </Label>
-                            <Input
+                            <TextInput
                                 id="name"
                                 name="name"
                                 placeholder="Enter your name"
                                 value={formData.name}
                                 onChange={handleInputChange}
-                                className="h-11"
                             />
                         </div>
 
@@ -216,14 +215,13 @@ export function InquiryWidget({
                             <Label htmlFor="email" className="text-sm font-medium">
                                 Email Address *
                             </Label>
-                            <Input
+                            <TextInput
                                 id="email"
                                 name="email"
                                 type="email"
                                 placeholder="your@email.com"
                                 value={formData.email}
                                 onChange={handleInputChange}
-                                className="h-11"
                             />
                         </div>
 
@@ -282,14 +280,13 @@ export function InquiryWidget({
                             <Label htmlFor="maxCapacity" className="text-sm font-medium">
                                 Expected Attendees / Max Capacity *
                             </Label>
-                            <Input
+                            <TextInput
                                 id="maxCapacity"
                                 name="maxCapacity"
                                 type="number"
                                 placeholder="Number of people"
                                 value={formData.maxCapacity}
                                 onChange={handleInputChange}
-                                className="h-11"
                                 min="1"
                                 required
                             />
@@ -372,13 +369,12 @@ export function InquiryWidget({
                             <Label htmlFor="equipmentNeeded" className="text-sm font-medium">
                                 Any Equipment Specifically Needed *
                             </Label>
-                            <Textarea
+                            <TextArea
                                 id="equipmentNeeded"
                                 name="equipmentNeeded"
                                 placeholder="Describe any specific technical requirements you have for your event"
                                 value={formData.equipmentNeeded}
                                 onChange={handleInputChange}
-                                className="min-h-30 resize-none"
                                 required
                             />
                         </div>
@@ -386,13 +382,12 @@ export function InquiryWidget({
                             <Label htmlFor="eventDescription" className="text-sm font-medium">
                                 Tell us about your event *
                             </Label>
-                            <Textarea
+                            <TextArea
                                 id="eventDescription"
                                 name="eventDescription"
                                 placeholder="Describe anything you'd like us to know to help host you"
                                 value={formData.eventDescription}
                                 onChange={handleInputChange}
-                                className="min-h-30 resize-none"
                             />
                         </div>
                     </div>
