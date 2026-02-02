@@ -3,18 +3,6 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import {
-    LayoutDashboard,
-    Home,
-    Calendar,
-    BarChart3,
-    Ticket,
-    HelpCircle,
-    Settings,
-    Menu,
-    X,
-    Mail,
-} from "lucide-react"
 import { useState } from "react"
 
 interface DashboardLayoutProps {
@@ -26,14 +14,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
     const navItems = [
-        { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-        { href: "/dashboard/spaces", label: "My Spaces", icon: Home },
-        { href: "/dashboard/bookings", label: "Bookings", icon: Calendar },
-        { href: "/dashboard/inquiries", label: "Inquiries", icon: Mail },
-        { href: "#", label: "Analytics", icon: BarChart3, disabled: true },
-        { href: "#", label: "Promo Codes", icon: Ticket, disabled: true },
-        { href: "#", label: "Help & FAQ", icon: HelpCircle, disabled: true },
-        { href: "#", label: "Settings", icon: Settings, disabled: true },
+        { href: "/dashboard", label: "Dashboard", icon: "fa-table-cells-large" },
+        { href: "/dashboard/spaces", label: "My Spaces", icon: "fa-house" },
+        { href: "/dashboard/bookings", label: "Bookings", icon: "fa-calendar" },
+        { href: "/dashboard/inquiries", label: "Inquiries", icon: "fa-envelope" },
+        { href: "#", label: "Analytics", icon: "fa-chart-simple", disabled: true },
+        { href: "#", label: "Promo Codes", icon: "fa-ticket", disabled: true },
+        { href: "#", label: "Help & FAQ", icon: "fa-circle-question", disabled: true },
+        { href: "#", label: "Settings", icon: "fa-gear", disabled: true },
     ]
 
     return (
@@ -64,14 +52,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                             onClick={() => setSidebarOpen(false)}
                             className="lg:hidden"
                         >
-                            <X className="w-5 h-5" />
+                            <i className="fa-regular fa-xmark w-5 h-5" />
                         </button>
                     </div>
 
                     {/* Navigation */}
                     <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-6">
                         {navItems.map((item) => {
-                            const Icon = item.icon
                             const isActive = pathname === item.href
                             const isDisabled = item.disabled
 
@@ -82,7 +69,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                                             className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 cursor-not-allowed"
                                             title="Coming soon"
                                         >
-                                            <Icon className="w-5 h-5 flex-shrink-0" />
+                                            <i className={`fa-regular ${item.icon} w-5 h-5 flex-shrink-0`} />
                                             <span className="text-sm font-medium">{item.label}</span>
                                         </div>
                                     ) : (
@@ -94,7 +81,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                                                 : "text-gray-700 hover:bg-gray-100"
                                                 }`}
                                         >
-                                            <Icon className="w-5 h-5 flex-shrink-0" />
+                                            <i className={`fa-regular ${item.icon} w-5 h-5 flex-shrink-0`} />
                                             <span>{item.label}</span>
                                         </Link>
                                     )}
@@ -126,7 +113,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                         onClick={() => setSidebarOpen(true)}
                         className="lg:hidden"
                     >
-                        <Menu className="w-6 h-6" />
+                        <i className="fa-regular fa-bars w-6 h-6" />
                     </button>
                     <div className="flex-1" />
                     <div className="flex items-center gap-4">

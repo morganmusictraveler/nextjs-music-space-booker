@@ -10,7 +10,6 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
-import { CalendarIcon, Trash2, Music2, User, Award } from "lucide-react"
 import { format } from "date-fns"
 
 interface InquirySpacePageProps {
@@ -175,21 +174,21 @@ export function InquirySpacePage({
                         <div className="grid grid-cols-3 gap-3">
                             <Card className="p-4 text-center hover:shadow-md transition-shadow">
                                 <div className="flex justify-center mb-2">
-                                    <Music2 className="w-5 h-5 text-primary" />
+                                    <i className="fa-solid fa-music w-5 h-5 text-primary" />
                                 </div>
                                 <div className="text-sm font-bold capitalize">{venueType}</div>
                                 <p className="text-xs text-muted-foreground mt-1">Space</p>
                             </Card>
                             <Card className="p-4 text-center hover:shadow-md transition-shadow">
                                 <div className="flex justify-center mb-2">
-                                    <User className="w-5 h-5 text-primary" />
+                                    <i className="fa-solid fa-user w-5 h-5 text-primary" />
                                 </div>
                                 <div className="text-sm font-bold">{hostName}</div>
                                 <p className="text-xs text-muted-foreground mt-1">Your host</p>
                             </Card>
                             <Card className="p-4 text-center hover:shadow-md transition-shadow">
                                 <div className="flex justify-center mb-2">
-                                    <Award className="w-5 h-5 text-primary" />
+                                    <i className="fa-solid fa-award w-5 h-5 text-primary" />
                                 </div>
                                 <div className="text-sm font-bold">24+</div>
                                 <p className="text-xs text-muted-foreground mt-1">Reviews</p>
@@ -258,7 +257,7 @@ export function InquirySpacePage({
                                                         variant="outline"
                                                         className="w-full h-11 justify-start text-left font-normal border-2"
                                                     >
-                                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                                        <i className="fa-regular fa-calendar mr-2 h-4 w-4" />
                                                         {formData.selectedDates.length === 0
                                                             ? "Select dates"
                                                             : `${formData.selectedDates.length} date${formData.selectedDates.length > 1 ? "s" : ""} selected`}
@@ -289,7 +288,7 @@ export function InquirySpacePage({
                                                                     className="ml-1 hover:bg-primary/20 rounded-full p-0.5 transition-colors"
                                                                     type="button"
                                                                 >
-                                                                    <Trash2 className="w-3 h-3" />
+                                                                    <i className="fa-regular fa-trash w-3 h-3" />
                                                                 </button>
                                                             </div>
                                                         )

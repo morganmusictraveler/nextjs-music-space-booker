@@ -1,16 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { TextInput } from "@/components/ui/text-input"
-import { TextArea } from "@/components/ui/text-area"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
-import { X, CalendarIcon, Trash2 } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 
@@ -52,7 +51,7 @@ export function InquiryWidget({
         eventDescription: "",
         equipmentNeeded: "",
         maxCapacity: "",
-        priceRange: [1000, 10000] as [number, number],
+        priceRange: [0, 10000] as [number, number],
         selectedDates: [] as Date[],
         requirements: {
             publiclySellingTickets: false,
@@ -66,6 +65,16 @@ export function InquiryWidget({
     })
     const [calendarOpen, setCalendarOpen] = useState(false)
 
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        if (showAsModal) {
+            document.body.style.overflow = 'hidden'
+            return () => {
+                document.body.style.overflow = 'unset'
+            }
+        }
+    }, [showAsModal])
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
         setFormData((prev) => ({
@@ -77,6 +86,11 @@ export function InquiryWidget({
     const handleDateSelect = (dates: Date[] | undefined) => {
         if (!dates) {
             setFormData((prev) => ({ ...prev, selectedDates: [] }))
+            return
+        }
+
+        // Limit to 3 dates maximum
+        if (dates.length > 3) {
             return
         }
 
@@ -128,7 +142,7 @@ export function InquiryWidget({
                     eventDescription: "",
                     equipmentNeeded: "",
                     maxCapacity: "",
-                    priceRange: [1000, 10000],
+                    priceRange: [0, 10000],
                     selectedDates: [],
                     requirements: {
                         publiclySellingTickets: false,
@@ -164,47 +178,48 @@ export function InquiryWidget({
         formData.priceRange[1] > 0
 
     const content = (
-        <div className="flex flex-col h-full max-h-[90vh] overflow-hidden">
+        <div className="flex flex-col max-h-[90vh] overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-3 border-b backdrop-blur-sm bg-card/95">
+            <div className="flex items-center justify-between px-6 py-3 border-b backdrop-blur-sm bg-card/95 shrink-0">
                 <div className="flex items-center gap-4">
                     <img
                         src="/houseofstrauss1.jpeg"
                         alt="House of Strauss"
-                        className="w-16 h-16 rounded-full object-cover border border-primary/20 shadow-sm"
+                        className="w-24 h-16 rounded-lg object-cover border border-primary/20 shadow-sm"
+                        loading="eager"
+                        style={{ imageRendering: 'crisp-edges' }}
                     />
-                    <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground leading-tight">
+                    <h2 className="text-[1.625rem] font-bold tracking-tight text-foreground leading-tight">
                         {venueName}
                     </h2>
                 </div>
                 {showAsModal && onClose && (
-                    <Button
-                        variant="ghost"
-                        size="icon"
+                    <button
                         onClick={onClose}
-                        className="rounded-full hover:bg-secondary/80 transition-colors"
+                        className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 hover:border hover:border-primary bg-white cursor-pointer group"
                     >
-                        <X className="w-5 h-5" />
-                    </Button>
+                        <i className="fa-solid fa-xmark text-xl transition-colors duration-300 group-hover:text-primary"></i>
+                    </button>
                 )}
             </div>
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto">
-                <div className="px-6 py-4 space-y-4">
+                <div className="px-6 py-6 space-y-6">
                     {/* Inquiry Form */}
-                    <div className="space-y-4">
+                    <div className="p-5 rounded-xl border border-border bg-[#f8f9fb] shadow-sm">
+                        <h3 className="text-primary uppercase font-bold text-sm tracking-wide mb-3">Contact Information</h3>
                         
-
+                        <div className="space-y-3">
                         {/* Name Field */}
                         <div className="space-y-1">
-                            <Label htmlFor="name" className="text-sm font-medium">
-                                Your Name *
+                            <Label htmlFor="name" className="text-xs font-bold text-[#707070] uppercase mb-2 block">
+                                Full Name
                             </Label>
-                            <TextInput
+                            <Input
                                 id="name"
                                 name="name"
-                                placeholder="Enter your name"
+                                placeholder="John Doe"
                                 value={formData.name}
                                 onChange={handleInputChange}
                             />
@@ -212,75 +227,66 @@ export function InquiryWidget({
 
                         {/* Email Field */}
                         <div className="space-y-1">
-                            <Label htmlFor="email" className="text-sm font-medium">
-                                Email Address *
+                            <Label htmlFor="email" className="text-xs font-bold text-[#707070] uppercase mb-2 block">
+                                Email Address
                             </Label>
-                            <TextInput
+                            <Input
                                 id="email"
                                 name="email"
                                 type="email"
-                                placeholder="your@email.com"
+                                placeholder="john@example.com"
                                 value={formData.email}
                                 onChange={handleInputChange}
                             />
                         </div>
-
-                        {/* Date Selection Field */}
-                        <div className="space-y-2 -mx-4 px-4 py-4 bg-linear-to-br from-primary/5 to-accent/5 border-y border-primary/10 rounded-lg">
-                            <Label className="text-base font-semibold">Dates You're Interested In *</Label>
-                            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full h-14 justify-start text-left font-medium text-base border-2 hover:border-primary/50 hover:bg-card"
-                                    >
-                                        <CalendarIcon className="mr-3 h-5 w-5" />
-                                        {formData.selectedDates.length === 0
-                                            ? "Select dates"
-                                            : `${formData.selectedDates.length} date${formData.selectedDates.length > 1 ? "s" : ""} selected`}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="multiple"
-                                        selected={formData.selectedDates}
-                                        onSelect={handleDateSelect}
-                                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                                    />
-                                </PopoverContent>
-                            </Popover>
-
-                            {/* Selected Dates Display */}
-                            {formData.selectedDates.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-primary/10">
-                                    {formData.selectedDates.map((date) => {
-                                        const dateObj = new Date(date)
-                                        return (
-                                            <div
-                                                key={dateObj.toDateString()}
-                                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/30"
-                                            >
-                                                {format(dateObj, "MMM d, yyyy")}
-                                                <button
-                                                    onClick={() => removeDate(date)}
-                                                    className="ml-1 hover:bg-primary/20 rounded-full p-0.5 transition-colors"
-                                                    type="button"
-                                                >
-                                                    <Trash2 className="w-3 h-3" />
-                                                </button>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            )}
                         </div>
+                    </div>
 
-                        {/* Max Capacity Field */}
-                        <div className="space-y-1">
-                            <Label htmlFor="maxCapacity" className="text-sm font-medium">
-                                Expected Attendees / Max Capacity *
-                            </Label>
-                            <TextInput
+                        {/* Inquiry Details with Event Dates and Expected Attendees */}
+                        <div className="p-5 rounded-xl border border-border bg-[#f8f9fb] shadow-sm">
+                            <h3 className="text-primary uppercase font-bold text-sm tracking-wide mb-3">Inquiry Details</h3>
+                            <div className="space-y-4">
+                                {/* Event Dates */}
+                                <div className="space-y-1">
+                                    <Label className="text-xs font-bold text-[#707070] uppercase mb-2 block">Event Dates</Label>
+                                    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                                    <PopoverTrigger asChild>
+                                        <button
+                                            className={cn(
+                                                "flex items-center justify-start w-full h-10 px-4 text-base font-normal",
+                                                "bg-white rounded-xl border border-[#d7d7d7]",
+                                                "shadow-[0_2px_4px_0_rgba(0,0,0,0.08)]",
+                                                "outline-none transition-all duration-300 cursor-pointer",
+                                                "hover:bg-[#fafbfc] hover:border-[#c0c0c0] hover:shadow-[0_2px_6px_0_rgba(0,0,0,0.12)]",
+                                                "focus:border-primary focus:shadow-[0_0_0_1px_#187aed,0_2px_4px_0_rgba(24,122,237,0.15)]",
+                                                "text-[#707070]",
+                                            )}
+                                        >
+                                            <i className="fa-solid fa-calendar mr-2 text-sm shrink-0 text-[#707070]"></i>
+                                            <span className="truncate">
+                                            {formData.selectedDates.length === 0
+                                                ? "Select up to 3 dates"
+                                                : formData.selectedDates.map(date => format(new Date(date), "MMM d, yyyy")).join(" - ")}
+                                            </span>
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="multiple"
+                                            selected={formData.selectedDates}
+                                            onSelect={handleDateSelect}
+                                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                </div>
+
+                                {/* Expected Attendees */}
+                                <div className="space-y-1">
+                                    <Label htmlFor="maxCapacity" className="text-xs font-bold text-[#707070] uppercase mb-2 block">
+                                    Expected Attendees
+                                </Label>
+                                <Input
                                 id="maxCapacity"
                                 name="maxCapacity"
                                 type="number"
@@ -290,45 +296,51 @@ export function InquiryWidget({
                                 min="1"
                                 required
                             />
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Budget Range Slider */}
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium">Expected Budget Range *</Label>
-                            <Slider
-                                value={formData.priceRange}
-                                onValueChange={(value) => {
-                                    if (value.length === 2) {
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            priceRange: [value[0], value[1]] as [number, number],
-                                        }))
-                                    }
-                                }}
-                                min={0}
-                                max={100000}
-                                step={500}
-                                className="w-full"
-                            />
-                            <div className="flex justify-between gap-4">
-                                <div className="flex-1">
-                                    <p className="text-xs text-muted-foreground mb-1">Minimum</p>
-                                    <p className="text-lg font-semibold text-foreground">
-                                        €{formData.priceRange[0].toLocaleString()}
-                                    </p>
+                        {/* Budget */}
+                        <div className="p-5 rounded-xl border border-border bg-[#f8f9fb] shadow-sm">
+                            <h3 className="text-primary uppercase font-bold text-sm tracking-wide mb-3">Budget</h3>
+                            <div className="space-y-3">
+                                <div>
+                                    <Slider
+                                        value={formData.priceRange}
+                                        onValueChange={(value) => {
+                                            if (value.length === 2) {
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    priceRange: [value[0], value[1]] as [number, number],
+                                                }))
+                                            }
+                                        }}
+                                        min={0}
+                                        max={50000}
+                                        step={500}
+                                        className="w-full"
+                                    />
                                 </div>
-                                <div className="flex-1 text-right">
-                                    <p className="text-xs text-muted-foreground mb-1">Maximum</p>
-                                    <p className="text-lg font-semibold text-foreground">
-                                        €{formData.priceRange[1].toLocaleString()}
-                                    </p>
+                                <div className="flex justify-between gap-4">
+                                    <div className="flex-1 p-3 rounded-lg bg-card shadow-md border border-border">
+                                        <p className="text-xs text-muted-foreground mb-1">Minimum</p>
+                                        <p className="text-xl font-bold text-primary">
+                                            €{formData.priceRange[0].toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div className="flex-1 text-right p-3 rounded-lg bg-card shadow-md border border-border">
+                                        <p className="text-xs text-muted-foreground mb-1">Maximum</p>
+                                        <p className="text-xl font-bold text-primary">
+                                            €{formData.priceRange[1].toLocaleString()}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Event Requirements Checkboxes */}
-                        <div className="space-y-1">
-                            <Label className="text-sm font-medium mb-1 block">Event Requirements</Label>
+                        <div className="p-5 rounded-xl border border-border bg-[#f8f9fb] shadow-sm">
+                            <h3 className="text-primary uppercase font-bold text-sm tracking-wide mb-3">Event Requirements</h3>
                             <div className="grid grid-cols-3 gap-2">
                                 {[
                                     { id: "publiclySellingTickets", label: "Publicly selling tickets?" },
@@ -337,15 +349,19 @@ export function InquiryWidget({
                                     { id: "audioEngineerNeeded", label: "Audio Engineer needed?" },
                                     { id: "lightingEngineerNeeded", label: "Lighting engineer needed?" },
                                     { id: "insuranceNeeded", label: "Insurance needed?" },
-                                    { id: "merchandiseToSell", label: "Merchandise to be sold?" },
                                 ].map((item) => {
                                     const selected = formData.requirements[item.id as keyof typeof formData.requirements]
                                     return (
                                         <button
                                             type="button"
                                             key={item.id}
-                                            className={`flex items-center justify-center text-center px-2 py-3 rounded-lg border text-xs font-medium transition-colors h-14 w-full
-                                                ${selected ? "bg-primary/10 border-primary text-primary" : "bg-card border-muted text-foreground hover:bg-muted/60"}`}
+                                            className={cn(
+                                                "w-full py-2.5 px-2 text-xs font-semibold rounded-xl border transition-all duration-300",
+                                                "text-center leading-tight",
+                                                selected
+                                                ? "bg-primary/10 border-primary text-primary shadow-md cursor-pointer"
+                                                : "bg-white text-[rgba(0,0,0,0.54)] border-[#d7d7d7] hover:border-primary hover:text-primary cursor-pointer",
+                                            )}
                                             aria-pressed={selected}
                                             onClick={() => {
                                                 setFormData((prev) => ({
@@ -365,48 +381,50 @@ export function InquiryWidget({
                         </div>
 
                         {/* Event Description Field */}
-                        <div className="space-y-1">
-                            <Label htmlFor="equipmentNeeded" className="text-sm font-medium">
-                                Any Equipment Specifically Needed *
-                            </Label>
-                            <TextArea
-                                id="equipmentNeeded"
-                                name="equipmentNeeded"
-                                placeholder="Describe any specific technical requirements you have for your event"
-                                value={formData.equipmentNeeded}
-                                onChange={handleInputChange}
-                                required
-                            />
+                        <div className="p-5 rounded-xl border border-border bg-[#f8f9fb] shadow-sm">
+                            <h3 className="text-primary uppercase font-bold text-sm tracking-wide mb-3">Additional Information</h3>
+                            <div className="space-y-3">
+                                <div className="space-y-1">
+                                    <Label htmlFor="equipmentNeeded" className="text-xs font-bold text-[#707070] uppercase mb-2 block">
+                                    Technical Needs
+                                </Label>
+                                <Textarea
+                                    id="equipmentNeeded"
+                                    name="equipmentNeeded"
+                                    placeholder="Describe any specific technical requirements you have for your event"
+                                    value={formData.equipmentNeeded}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label htmlFor="eventDescription" className="text-xs font-bold text-[#707070] uppercase mb-2 block">
+                                    ADDITIONAL REMARKS
+                                </Label>
+                                <Textarea
+                                    id="eventDescription"
+                                    name="eventDescription"
+                                    placeholder="Describe anything you'd like us to know to help host you"
+                                    value={formData.eventDescription}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            </div>
                         </div>
-                        <div className="space-y-1">
-                            <Label htmlFor="eventDescription" className="text-sm font-medium">
-                                Tell us about your event *
-                            </Label>
-                            <TextArea
-                                id="eventDescription"
-                                name="eventDescription"
-                                placeholder="Describe anything you'd like us to know to help host you"
-                                value={formData.eventDescription}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Contact Info */}
 
                 </div>
             </div>
 
             {/* Footer with Submit Button */}
-            <div className="border-t backdrop-blur-sm bg-card/95 px-6 py-4">
-                <Button
+            <div className="border-t backdrop-blur-sm bg-card/95 px-6 pt-4 shrink-0">
+                <button
                     onClick={handleSubmit}
                     disabled={!isFormValid}
-                    className="w-full px-8 h-10 font-semibold shadow hover:shadow-md transition-all disabled:opacity-50 mb-2"
+                    className="w-full h-[40px] px-7 text-lg font-normal bg-primary text-white rounded-xl cursor-pointer transition-all duration-300 hover:bg-[#1367c7] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                    Send Inquiry
-                </Button>
-                <div className="flex items-center justify-center gap-2 mt-2">
+                    <span>Send Inquiry</span>
+                </button>
+                <div className="flex items-center justify-center gap-2 mt-4">
                     <span className="text-xs text-muted-foreground">Powered by</span>
                     <a href="https://musictraveler.com" target="_blank" rel="noopener noreferrer">
                         <img
@@ -422,7 +440,7 @@ export function InquiryWidget({
 
     if (showAsModal) {
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/10  animate-in fade-in duration-200">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40  animate-in fade-in duration-200">
                 <Card className="w-full max-w-3xl shadow-2xl border-border/50 animate-in zoom-in-95 duration-200">
                     {content}
                 </Card>

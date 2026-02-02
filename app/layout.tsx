@@ -26,6 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={nunitoSans.variable}>
+      <head>
+        <script src="https://kit.fontawesome.com/c7afc8063a.js" crossOrigin="anonymous"></script>
+      </head>
       <body className="font-sans antialiased">
         {children}
         <Analytics />
