@@ -19,7 +19,7 @@ export function TimeslotButton({ time, price, available, selected, onClick }: Ti
         selected
           ? "bg-primary/10 border-primary text-primary shadow-md cursor-pointer"
           : "bg-white text-[rgba(0,0,0,0.54)] border-[#d7d7d7]",
-        available && !selected && "hover:border-primary hover:text-primary cursor-pointer",
+        available && !selected && "hover:border-primary hover:text-primary hover:bg-primary/5 cursor-pointer",
         !available && "cursor-not-allowed bg-[#f4f4f4] text-[#b0adad] border-[#d7d7d7]",
       )}
     >

@@ -60,7 +60,7 @@ function Calendar({
         ),
         month_caption: cn(
           'flex items-center justify-center h-(--cell-size) w-full px-(--cell-size) text-base',
-          'font-semibold',
+          'font-semibold border-b border-border pb-2 mb-2',
           defaultClassNames.month_caption,
         ),
         dropdowns: cn(
