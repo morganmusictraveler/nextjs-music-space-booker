@@ -287,15 +287,15 @@ export function BookingWidget({
                       <SelectTrigger className="w-full hover:bg-[#f0f4ff] hover:border-primary/50 hover:shadow-[0_2px_8px_0_rgba(24,122,237,0.2)] transition-all duration-300">
                         <div className="flex items-center">
                           <i className="fa-solid fa-users mr-2 text-sm"></i>
-                          <SelectValue placeholder="Musicians" />
+                          <SelectValue placeholder="People" />
                         </div>
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1">1 Musician</SelectItem>
-                        <SelectItem value="2">2 Musicians</SelectItem>
-                        <SelectItem value="3">3 Musicians</SelectItem>
-                        <SelectItem value="4">4 Musicians</SelectItem>
-                        <SelectItem value="5">5+ Musicians</SelectItem>
+                        <SelectItem value="1">1 Person</SelectItem>
+                        <SelectItem value="2">2 People</SelectItem>
+                        <SelectItem value="3">3 People</SelectItem>
+                        <SelectItem value="4">4 People</SelectItem>
+                        <SelectItem value="5">5+ People</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -361,14 +361,11 @@ export function BookingWidget({
                 <div className="space-y-3">
                   <h3 className="text-primary uppercase font-bold text-sm tracking-wide">Location</h3>
                   <div className="aspect-video w-full rounded-xl overflow-hidden bg-muted ring-1 ring-border shadow-sm">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      frameBorder="0"
-                      style={{ border: 0 }}
-                      src="https://www.google.com/maps/embed/v1/view?key=AIzaSyB8LaX5wYg6px8uZTtgRvozCrE-ltw9SUg&center=48.2082,16.3738&zoom=15&maptype=roadmap"
-                      allowFullScreen
-                    ></iframe>
+                    <img
+                      src="/houseofstraussmaplocation.png"
+                      alt="Location map"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               )}
@@ -497,7 +494,7 @@ export function BookingWidget({
                     <span className="font-medium">{selectedTimes.length > 0 ? selectedTimes.join(", ") : "-"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Musicians:</span>
+                    <span className="text-muted-foreground">People:</span>
                     <span className="font-medium">{guests}</span>
                   </div>
                   <div className="h-px bg-border my-2" />

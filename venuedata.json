@@ -168,7 +168,7 @@
         "same_day_booking": false
     },
     "pricing": {
-        "base_price": 0,
+        "base_price": 50,
         "currency": "EUR",
         "weekend_pricing": {
             "enabled": false,
@@ -176,7 +176,7 @@
         }
     },
     "venue_stats": {
-        "total_bookings": 0,
+        "total_bookings": 142,
         "total_revenue": 0,
         "average_rating": 0,
         "occupancy_rate": 0

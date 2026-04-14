@@ -34,7 +34,7 @@ export default function Page() {
         <div
           className="h-[60vh] bg-cover bg-center"
           style={{
-            backgroundImage: `url(https://d1r3culteut8k2.cloudfront.net/media/attachments/room_room/3461/thumbs/thumb_3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg.1920x1080_q85.jpg)`,
+            backgroundImage: `url(/houseofstrauss1.jpeg)`,
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80" />
@@ -42,7 +42,7 @@ export default function Page() {
             <div className="max-w-2xl">
               <h2 className="text-5xl font-bold text-white mb-4 text-balance">{venue.name}</h2>
               <p className="text-xl text-white/90 mb-8 text-pretty">
-                {venue.description?.split(". ")[0]}
+                {venue.description?.split(/\r?\n\r?\n/)[0]}
               </p>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function Page() {
             "Grand Piano",
             "Professional Sound System",
           ]}
-          mapUrl="https://d1r3culteut8k2.cloudfront.net/media/attachments/room_room/3461/thumbs/thumb_3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg.1920x1080_q85.jpg"
+          mapUrl="/houseofstraussmaplocation.png"
           showAsModal={true}
           onClose={() => setShowWidget(false)}
         />

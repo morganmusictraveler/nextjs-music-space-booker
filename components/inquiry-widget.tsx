@@ -52,8 +52,8 @@ export function InquiryWidget({
         organization: "",
         eventDescription: "",
         equipmentNeeded: "",
-        maxCapacity: "",
-        priceRange: [0, 10000] as [number, number],
+        maxCapacity: [1, 50] as [number, number],
+        priceRange: [0, 1000000] as [number, number],
         eventDates: [
             { date: null as Date | null, startTime: "09:00", endTime: "11:00", isPrimary: true }
         ],
@@ -68,7 +68,7 @@ export function InquiryWidget({
         },
         riderFile: null as File | null,
     })
-    const [activeCalendarIndex, setActiveCalendarIndex] = useState<number | null>(null)
+    const [calendarOpen, setCalendarOpen] = useState(false)
     const [editingTimeIndex, setEditingTimeIndex] = useState<number | null>(null)
     const [tempTimeData, setTempTimeData] = useState<{startTime: string, endTime: string} | null>(null)
     const [currentPage, setCurrentPage] = useState(1)
@@ -125,7 +125,31 @@ export function InquiryWidget({
                 ...prev,
                 eventDates: prev.eventDates.filter((_, i) => i !== index)
             }))
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                eventDates: [{ date: null, startTime: "09:00", endTime: "11:00", isPrimary: true }]
+            }))
         }
+    }
+
+    const handleMultiDateSelect = (dates: Date[] | undefined) => {
+        if (!dates || dates.length === 0) {
+            setFormData((prev) => ({
+                ...prev,
+                eventDates: [{ date: null, startTime: "09:00", endTime: "11:00", isPrimary: true }]
+            }))
+            return
+        }
+        setFormData((prev) => {
+            const newDates = dates.map((date, i) => {
+                const existing = prev.eventDates.find(
+                    (d) => d.date && format(d.date, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
+                )
+                return existing ? existing : { date, startTime: "09:00", endTime: "11:00", isPrimary: i === 0 }
+            })
+            return { ...prev, eventDates: newDates }
+        })
     }
 
     const calculateDuration = (start: string, end: string): string => {
@@ -242,7 +266,7 @@ export function InquiryWidget({
 
     const handleContinue = () => {
         const hasValidDate = formData.eventDates.some(d => d.date !== null)
-        if (!hasValidDate || !formData.maxCapacity) {
+        if (!hasValidDate || !formData.maxCapacity[1]) {
             alert("Please fill in all required fields on this page")
             return
         }
@@ -306,8 +330,8 @@ export function InquiryWidget({
                     organization: "",
                     eventDescription: "",
                     equipmentNeeded: "",
-                    maxCapacity: "",
-                    priceRange: [0, 10000],
+                    maxCapacity: [1, 50] as [number, number],
+                    priceRange: [0, 1000000],
                     eventDates: [
                         { date: null, startTime: "09:00", endTime: "11:00", isPrimary: true }
                     ],
@@ -340,7 +364,7 @@ export function InquiryWidget({
 
     const isPage1Valid =
         formData.eventDates.some(d => d.date !== null) &&
-        formData.maxCapacity
+        formData.maxCapacity[1] > 0
 
     const isPage2Valid =
         formData.name &&
@@ -398,64 +422,66 @@ export function InquiryWidget({
                             <div className="p-5 rounded-xl border border-border bg-[#f8f9fb] shadow-sm">
                                 <h3 className="text-primary uppercase font-bold text-sm tracking-wide mb-3">Inquiry Details</h3>
                                 <div className="space-y-4">
-                                    {/* Event Dates - Multiple with draggable times */}
+                                    {/* Event Dates */}
                                     <div className="space-y-3">
-                                        <Label className="text-xs font-bold text-[#707070] uppercase mb-2 block">Event Dates</Label>
-                                        
-                                        {formData.eventDates.map((eventDate, index) => (
-                                            <div key={index} className="space-y-2">
-                                                {/* Date Picker Button with integrated X button */}
-                                                <Popover open={activeCalendarIndex === index} onOpenChange={(open) => setActiveCalendarIndex(open ? index : null)}>
-                                                    <PopoverTrigger asChild>
-                                                        <div className="relative group">
-                                                            <button
-                                                                className={cn(
-                                                                    "flex items-center justify-start w-full h-10 px-4 text-base font-normal",
-                                                                    "bg-white rounded-xl border border-[#d7d7d7]",
-                                                                    "shadow-[0_2px_4px_0_rgba(0,0,0,0.08)]",
-                                                                    "outline-none transition-all duration-300 cursor-pointer",
-                                                                    "hover:bg-[#f0f4ff] hover:border-primary/50 hover:shadow-[0_2px_8px_0_rgba(24,122,237,0.2)]",
-                                                                    "focus:border-primary focus:shadow-[0_0_0_1px_#187aed,0_2px_4px_0_rgba(24,122,237,0.15)]",
-                                                                    eventDate.date ? "text-[#707070]" : "text-[#707070]/60",
-                                                                    !eventDate.isPrimary && "pr-12"
-                                                                )}
-                                                            >
-                                                                <i className="fa-solid fa-calendar mr-2 text-sm shrink-0 text-[#707070]"></i>
-                                                                <span className="truncate">
-                                                                    {formatDateTimeDisplay(eventDate.date, eventDate.startTime, eventDate.endTime, index)}
-                                                                </span>
-                                                            </button>
-                                                            {/* X button for secondary/tertiary dates */}
-                                                            {!eventDate.isPrimary && (
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation()
-                                                                        removeEventDate(index)
-                                                                    }}
-                                                                    className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center transition-colors duration-200 hover:text-red-700 z-10 cursor-pointer"
-                                                                >
-                                                                    <i className="fa-solid fa-xmark text-lg text-red-500"></i>
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0" align="start">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={eventDate.date || undefined}
-                                                            onSelect={(date) => handleDateSelect(date, index)}
-                                                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </div>
-                                        ))}
+                                        <Label className="text-xs font-bold text-[#707070] uppercase mb-2 block">Dates You're Interested In</Label>
 
-                                        {/* Time Picker Modal Overlay */}
+                                        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                                            <PopoverTrigger asChild>
+                                                <button
+                                                    className={cn(
+                                                        "flex items-center justify-start w-full h-10 px-4 text-base font-normal",
+                                                        "bg-white rounded-xl border border-[#d7d7d7]",
+                                                        "shadow-[0_2px_4px_0_rgba(0,0,0,0.08)]",
+                                                        "outline-none transition-all duration-300 cursor-pointer",
+                                                        "hover:bg-[#f0f4ff] hover:border-primary/50 hover:shadow-[0_2px_8px_0_rgba(24,122,237,0.2)]",
+                                                        formData.eventDates.some(d => d.date) ? "text-[#707070]" : "text-[#707070]/60"
+                                                    )}
+                                                >
+                                                    <i className="fa-solid fa-calendar mr-2 text-sm shrink-0 text-[#707070]"></i>
+                                                    <span>
+                                                        {formData.eventDates.filter(d => d.date).length === 0
+                                                            ? "Pick a date"
+                                                            : `${formData.eventDates.filter(d => d.date).length} date${formData.eventDates.filter(d => d.date).length > 1 ? "s" : ""} selected`}
+                                                    </span>
+                                                </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                                <Calendar
+                                                    mode="multiple"
+                                                    selected={formData.eventDates.filter(d => d.date).map(d => d.date as Date)}
+                                                    onSelect={handleMultiDateSelect}
+                                                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+
+                                        {/* Date Tags */}
+                                        {formData.eventDates.some(d => d.date) && (
+                                            <div className="flex flex-wrap gap-2">
+                                                {formData.eventDates.map((eventDate, index) =>
+                                                    eventDate.date ? (
+                                                        <span
+                                                            key={index}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/20"
+                                                        >
+                                                            {format(eventDate.date, "MMM d, yyyy")}
+                                                            <button
+                                                                onClick={() => removeEventDate(index)}
+                                                                className="hover:text-red-500 transition-colors cursor-pointer ml-0.5"
+                                                            >
+                                                                <i className="fa-solid fa-xmark text-xs"></i>
+                                                            </button>
+                                                        </span>
+                                                    ) : null
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* (time picker modal kept for future use, not triggered) */}
                                         {editingTimeIndex !== null && tempTimeData && (
                                             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
                                                 <div className="bg-white rounded-xl border border-[#d7d7d7] p-6 shadow-2xl max-w-2xl w-full">
-                                                    {/* Time labels */}
                                                     <div className="flex justify-between items-center mb-6">
                                                         <div className="flex-1">
                                                             <span className="text-xs text-muted-foreground uppercase font-semibold block mb-1">Start Time</span>
@@ -557,33 +583,49 @@ export function InquiryWidget({
                                             </div>
                                         )}
 
-                                        {/* Add Date Button - only show if previous date is filled */}
-                                        {formData.eventDates.length < 3 && formData.eventDates[formData.eventDates.length - 1].date !== null && (
-                                            <button
-                                                onClick={addEventDate}
-                                                className="w-full py-3 px-4 text-sm font-semibold rounded-xl border border-primary/30 text-primary bg-white transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary cursor-pointer flex items-center justify-center gap-2 group"
-                                            >
-                                                <i className="fa-solid fa-plus text-primary group-hover:text-white transition-colors duration-300"></i>
-                                                <span>Add {formData.eventDates.length === 1 ? 'Secondary' : 'Tertiary'} Date</span>
-                                            </button>
-                                        )}
                                     </div>
 
                                     {/* Expected Attendees */}
-                                    <div className="space-y-1">
-                                        <Label htmlFor="maxCapacity" className="text-xs font-bold text-[#707070] uppercase mb-2 block">
-                                        Expected Attendees
-                                    </Label>
-                                    <Input
-                                    id="maxCapacity"
-                                    name="maxCapacity"
-                                    type="number"
-                                    placeholder="Number of people"
-                                    value={formData.maxCapacity}
-                                    onChange={handleInputChange}
-                                    min="1"
-                                    required
-                                />
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-bold text-[#707070] uppercase mb-2 block">
+                                            Expected Attendees
+                                        </Label>
+                                        <div className="flex items-center justify-center gap-4 py-2">
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                max={formData.maxCapacity[1]}
+                                                value={formData.maxCapacity[0]}
+                                                onChange={(e) => {
+                                                    const val = Math.min(Number(e.target.value), formData.maxCapacity[1])
+                                                    setFormData((prev) => ({ ...prev, maxCapacity: [val, prev.maxCapacity[1]] }))
+                                                }}
+                                                className="text-2xl font-bold text-primary bg-transparent border-none outline-none w-24 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            />
+                                            <span className="text-xl font-bold text-primary">—</span>
+                                            <input
+                                                type="number"
+                                                min={formData.maxCapacity[0]}
+                                                value={formData.maxCapacity[1]}
+                                                onChange={(e) => {
+                                                    const val = Math.max(Number(e.target.value), formData.maxCapacity[0])
+                                                    setFormData((prev) => ({ ...prev, maxCapacity: [prev.maxCapacity[0], val] }))
+                                                }}
+                                                className="text-2xl font-bold text-primary bg-transparent border-none outline-none w-24 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            />
+                                        </div>
+                                        <Slider
+                                            value={formData.maxCapacity}
+                                            onValueChange={(value) => {
+                                                if (value.length === 2) {
+                                                    setFormData((prev) => ({ ...prev, maxCapacity: [value[0], value[1]] as [number, number] }))
+                                                }
+                                            }}
+                                            min={1}
+                                            max={10000}
+                                            step={1}
+                                            className="w-full"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -604,7 +646,7 @@ export function InquiryWidget({
                                                 }
                                             }}
                                             min={0}
-                                            max={50000}
+                                            max={1000000}
                                             step={500}
                                             className="w-full"
                                         />
@@ -612,15 +654,39 @@ export function InquiryWidget({
                                     <div className="flex justify-between gap-4">
                                         <div className="flex-1 p-3 rounded-lg bg-card shadow-md border border-border">
                                             <p className="text-xs text-muted-foreground mb-1">Minimum</p>
-                                            <p className="text-xl font-bold text-primary">
-                                                €{formData.priceRange[0].toLocaleString()}
-                                            </p>
+                                            <div className="flex items-center">
+                                                <span className="text-xl font-bold text-primary mr-0.5">€</span>
+                                                <input
+                                                    type="number"
+                                                    min={0}
+                                                    max={formData.priceRange[1]}
+                                                    step={500}
+                                                    value={formData.priceRange[0]}
+                                                    onChange={(e) => {
+                                                        const val = Math.min(Number(e.target.value), formData.priceRange[1])
+                                                        setFormData((prev) => ({ ...prev, priceRange: [val, prev.priceRange[1]] }))
+                                                    }}
+                                                    className="text-xl font-bold text-primary bg-transparent border-none outline-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="flex-1 text-right p-3 rounded-lg bg-card shadow-md border border-border">
                                             <p className="text-xs text-muted-foreground mb-1">Maximum</p>
-                                            <p className="text-xl font-bold text-primary">
-                                                €{formData.priceRange[1].toLocaleString()}
-                                            </p>
+                                            <div className="flex items-center justify-end">
+                                                <span className="text-xl font-bold text-primary mr-0.5">€</span>
+                                                <input
+                                                    type="number"
+                                                    min={formData.priceRange[0]}
+                                                    max={1000000}
+                                                    step={500}
+                                                    value={formData.priceRange[1]}
+                                                    onChange={(e) => {
+                                                        const val = Math.max(Number(e.target.value), formData.priceRange[0])
+                                                        setFormData((prev) => ({ ...prev, priceRange: [prev.priceRange[0], val] }))
+                                                    }}
+                                                    className="text-xl font-bold text-primary bg-transparent border-none outline-none w-full text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -667,75 +733,53 @@ export function InquiryWidget({
                                     })}
                                 </div>
                                 
-                                {/* Additional Requirements (moved from below) */}
-                                <div className="mt-4 pt-4 border-t border-border">
-                                    <Label htmlFor="equipmentNeeded" className="text-xs font-bold text-[#707070] uppercase mb-2 block">
-                                        Additional Requirements
-                                    </Label>
-                                    <Textarea
-                                        id="equipmentNeeded"
-                                        name="equipmentNeeded"
-                                        placeholder="Describe any specific technical requirements you have for your event"
-                                        value={formData.equipmentNeeded}
-                                        onChange={handleInputChange}
+                            </div>
+
+                            {/* Rider Upload */}
+                            <div className="p-5 rounded-xl border border-border bg-[#f8f9fb] shadow-sm">
+                                <h3 className="text-primary uppercase font-bold text-sm tracking-wide mb-3">Upload Rider</h3>
+                                <div 
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className={cn(
+                                        "flex flex-col items-center justify-center py-6 px-4 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer",
+                                        formData.riderFile 
+                                            ? "border-primary bg-primary/5" 
+                                            : "border-[#d7d7d7] bg-white hover:border-primary/50 hover:bg-primary/5"
+                                    )}
+                                >
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept=".pdf,.doc,.docx"
+                                        onChange={handleFileChange}
+                                        className="hidden"
                                     />
+                                    {formData.riderFile ? (
+                                        <>
+                                            <i className="fa-solid fa-file-check text-2xl text-primary mb-2"></i>
+                                            <span className="text-sm font-medium text-primary">{formData.riderFile.name}</span>
+                                            <span className="text-xs text-muted-foreground mt-1">Click to change file</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="fa-solid fa-cloud-arrow-up text-2xl text-[#707070] mb-2"></i>
+                                            <span className="text-sm font-medium text-[#707070]">Click to upload rider</span>
+                                            <span className="text-xs text-muted-foreground mt-1">PDF, DOC, DOCX (max 10MB)</span>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
                             {/* Additional Information */}
                             <div className="p-5 rounded-xl border border-border bg-[#f8f9fb] shadow-sm">
                                 <h3 className="text-primary uppercase font-bold text-sm tracking-wide mb-3">Additional Information</h3>
-                                <div className="space-y-3">
-                                    <div className="space-y-1">
-                                        <Label htmlFor="eventDescription" className="text-xs font-bold text-[#707070] uppercase mb-2 block">
-                                            ADDITIONAL REMARKS
-                                        </Label>
-                                        <Textarea
-                                            id="eventDescription"
-                                            name="eventDescription"
-                                            placeholder="Describe anything you'd like us to know to help host you"
-                                            value={formData.eventDescription}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                    
-                                    {/* Rider Upload */}
-                                    <div className="space-y-1">
-                                        <Label className="text-xs font-bold text-[#707070] uppercase mb-2 block">
-                                            Upload Rider
-                                        </Label>
-                                        <div 
-                                            onClick={() => fileInputRef.current?.click()}
-                                            className={cn(
-                                                "flex flex-col items-center justify-center py-6 px-4 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer",
-                                                formData.riderFile 
-                                                    ? "border-primary bg-primary/5" 
-                                                    : "border-[#d7d7d7] bg-white hover:border-primary/50 hover:bg-primary/5"
-                                            )}
-                                        >
-                                            <input
-                                                ref={fileInputRef}
-                                                type="file"
-                                                accept=".pdf,.doc,.docx"
-                                                onChange={handleFileChange}
-                                                className="hidden"
-                                            />
-                                            {formData.riderFile ? (
-                                                <>
-                                                    <i className="fa-solid fa-file-check text-2xl text-primary mb-2"></i>
-                                                    <span className="text-sm font-medium text-primary">{formData.riderFile.name}</span>
-                                                    <span className="text-xs text-muted-foreground mt-1">Click to change file</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <i className="fa-solid fa-cloud-arrow-up text-2xl text-[#707070] mb-2"></i>
-                                                    <span className="text-sm font-medium text-[#707070]">Click to upload rider</span>
-                                                    <span className="text-xs text-muted-foreground mt-1">PDF, DOC, DOCX (max 10MB)</span>
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+                                <Textarea
+                                    id="equipmentNeeded"
+                                    name="equipmentNeeded"
+                                    placeholder="Describe any additional requirements or information you'd like us to know"
+                                    value={formData.equipmentNeeded}
+                                    onChange={handleInputChange}
+                                />
                             </div>
                         </>
                     ) : (
@@ -895,7 +939,7 @@ export function InquiryWidget({
                                     ))}
                                     <div className="flex justify-between pt-2">
                                         <span className="text-muted-foreground">Expected Attendees:</span>
-                                        <span className="font-medium">{formData.maxCapacity || "-"}</span>
+                                        <span className="font-medium">{formData.maxCapacity[0]} — {formData.maxCapacity[1]}</span>
                                     </div>
                                     <div className="h-px bg-border my-2" />
                                     <div className="flex justify-between">

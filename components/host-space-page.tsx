@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
+import { TimeslotButton } from "@/components/ui/timeslot-button"
+
 import { cn } from "@/lib/utils"
 
 interface HostSpacePageProps {
@@ -66,32 +68,37 @@ export function HostSpacePage({
     hourlyRate,
 }: HostSpacePageProps) {
     const [date, setDate] = useState<Date>()
-    const [selectedTime, setSelectedTime] = useState<string>()
+    const [selectedTimes, setSelectedTimes] = useState<string[]>([])
     const [guests, setGuests] = useState<string>("2")
-    const [duration, setDuration] = useState<string>("2")
-    const [clientName, setClientName] = useState("")
     const [clientEmail, setClientEmail] = useState("")
     const [clientPhone, setClientPhone] = useState("")
     const [isWishlisted, setIsWishlisted] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
+    const [clientName, setClientName] = useState("")
+
     const timeSlots = [
-        { time: "9:00 AM", available: true },
-        { time: "10:00 AM", available: true },
-        { time: "11:00 AM", available: false },
-        { time: "12:00 PM", available: true },
-        { time: "1:00 PM", available: true },
-        { time: "2:00 PM", available: true },
-        { time: "3:00 PM", available: false },
-        { time: "4:00 PM", available: true },
-        { time: "5:00 PM", available: true },
-        { time: "6:00 PM", available: true },
-        { time: "7:00 PM", available: true },
-        { time: "8:00 PM", available: false },
+        { time: "9:00", displayTime: "09:00", price: hourlyRate, available: true },
+        { time: "10:00", displayTime: "10:00", price: hourlyRate, available: true },
+        { time: "11:00", displayTime: "11:00", price: hourlyRate, available: false },
+        { time: "12:00", displayTime: "12:00", price: hourlyRate, available: true },
+        { time: "13:00", displayTime: "13:00", price: hourlyRate, available: true },
+        { time: "14:00", displayTime: "14:00", price: hourlyRate, available: true },
+        { time: "15:00", displayTime: "15:00", price: hourlyRate, available: false },
+        { time: "16:00", displayTime: "16:00", price: hourlyRate, available: true },
+        { time: "17:00", displayTime: "17:00", price: hourlyRate, available: true },
+        { time: "18:00", displayTime: "18:00", price: hourlyRate, available: true },
+        { time: "19:00", displayTime: "19:00", price: hourlyRate, available: true },
+        { time: "20:00", displayTime: "20:00", price: hourlyRate, available: false },
     ]
 
+    const toggleTimeSlot = (time: string) => {
+        setSelectedTimes((prev) =>
+            prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time]
+        )
+    }
     const handleBooking = async () => {
-        if (!date || !selectedTime || !clientName || !clientEmail) {
+        if (!date || selectedTimes.length === 0 || !clientName || !clientEmail) {
             alert("Please fill in all required fields")
             return
         }
@@ -109,20 +116,19 @@ export function HostSpacePage({
                     clientEmail,
                     clientPhone,
                     date: new Date(date).toISOString().split("T")[0],
-                    time: selectedTime,
-                    duration: parseInt(duration),
+                    times: selectedTimes,
                     guests: parseInt(guests),
-                    amount: totalPrice,
+                    amount: selectedTimes.length * hourlyRate,
                 }),
             })
 
             if (response.ok) {
                 alert("Booking confirmed! You'll receive a confirmation email shortly.")
-                setDate(undefined)
-                setSelectedTime(undefined)
                 setClientName("")
                 setClientEmail("")
                 setClientPhone("")
+                setDate(undefined)
+                setSelectedTimes([])
             } else {
                 alert("Failed to create booking. Please try again.")
             }
@@ -135,8 +141,7 @@ export function HostSpacePage({
     }
 
     const hourlyPrice = hourlyRate
-    const durationHours = parseInt(duration)
-    const totalPrice = hourlyPrice * durationHours
+    const totalPrice = selectedTimes.length * hourlyRate
 
     return (
         <div className="min-h-screen bg-background">
@@ -363,7 +368,7 @@ export function HostSpacePage({
                         <Card className="p-6 space-y-4">
                             <div className="aspect-video w-full rounded-lg overflow-hidden bg-muted">
                                 <img
-                                    src="/map.png"
+                                    src="/houseofstraussmaplocation.png"
                                     alt="Studio location"
                                     className="w-full h-full object-cover"
                                 />
@@ -394,7 +399,7 @@ export function HostSpacePage({
                                         <span className="text-4xl font-bold">${hourlyPrice}</span>
                                         <span className="text-muted-foreground">/hour</span>
                                     </div>
-                                    <p className="text-sm text-muted-foreground mt-2">for {durationHours} hours</p>
+                                    <p className="text-sm text-muted-foreground mt-2">{selectedTimes.length > 0 ? `for ${selectedTimes.length} hour${selectedTimes.length > 1 ? 's' : ''}` : 'per hour'}</p>
                                 </div>
 
                                 <div className="border-t border-primary/10 pt-6 space-y-4">
@@ -420,29 +425,8 @@ export function HostSpacePage({
                                         </Popover>
                                     </div>
 
-                                    {/* Duration */}
                                     <div>
-                                        <label className="text-sm font-semibold block mb-2">Duration</label>
-                                        <Select value={duration} onValueChange={setDuration}>
-                                            <SelectTrigger className="h-11">
-                                                <div className="flex items-center">
-                                                    <i className="fa-regular fa-clock mr-2 h-4 w-4" />
-                                                    <SelectValue />
-                                                </div>
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="1">1 hour</SelectItem>
-                                                <SelectItem value="2">2 hours</SelectItem>
-                                                <SelectItem value="3">3 hours</SelectItem>
-                                                <SelectItem value="4">4 hours</SelectItem>
-                                                <SelectItem value="8">Full day (8 hrs)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    {/* Guests */}
-                                    <div>
-                                        <label className="text-sm font-semibold block mb-2">Musicians</label>
+                                        <label className="text-sm font-semibold block mb-2">People</label>
                                         <Select value={guests} onValueChange={setGuests}>
                                             <SelectTrigger className="h-11">
                                                 <div className="flex items-center">
@@ -451,30 +435,30 @@ export function HostSpacePage({
                                                 </div>
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="1">1 Musician</SelectItem>
-                                                <SelectItem value="2">2 Musicians</SelectItem>
-                                                <SelectItem value="3">3 Musicians</SelectItem>
-                                                <SelectItem value="4">4 Musicians</SelectItem>
-                                                <SelectItem value="5">5+ Musicians</SelectItem>
+                                                <SelectItem value="1">1 Person</SelectItem>
+                                                <SelectItem value="2">2 People</SelectItem>
+                                                <SelectItem value="3">3 People</SelectItem>
+                                                <SelectItem value="4">4 People</SelectItem>
+                                                <SelectItem value="5">5+ People</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
+
+                                    {/* Guests */}
 
                                     {/* Time Selection */}
                                     <div>
                                         <label className="text-sm font-semibold block mb-2">Select Time</label>
                                         <div className="grid grid-cols-3 gap-2">
                                             {timeSlots.map((slot) => (
-                                                <Button
+                                                <TimeslotButton
                                                     key={slot.time}
-                                                    variant={selectedTime === slot.time ? "default" : "outline"}
-                                                    disabled={!slot.available}
-                                                    onClick={() => setSelectedTime(slot.time)}
-                                                    size="sm"
-                                                    className="text-xs font-medium"
-                                                >
-                                                    {slot.time}
-                                                </Button>
+                                                    time={slot.displayTime}
+                                                    price={slot.price}
+                                                    available={slot.available}
+                                                    selected={selectedTimes.includes(slot.time)}
+                                                    onClick={() => toggleTimeSlot(slot.time)}
+                                                />
                                             ))}
                                         </div>
                                     </div>
@@ -483,15 +467,13 @@ export function HostSpacePage({
                                     <div className="border-t border-primary/10 pt-4 space-y-2">
                                         <div className="flex justify-between text-sm">
                                             <span>${hourlyPrice}/hr</span>
-                                            <span>×{durationHours}</span>
+                                            <span>×{selectedTimes.length}</span>
                                         </div>
                                         <div className="flex justify-between font-semibold text-lg">
                                             <span>Total</span>
                                             <span>${totalPrice}</span>
                                         </div>
                                     </div>
-
-                                    {/* Client Info Section */}
                                     <div className="border-t border-primary/10 pt-4 space-y-3">
                                         <h3 className="font-semibold text-foreground text-sm">Your Information</h3>
                                         <div>
@@ -528,11 +510,12 @@ export function HostSpacePage({
                                 </div>
                             </div>
 
+                                    {/* Client Info Section */}
                             {/* Booking Button */}
                             <Button
                                 size="lg"
                                 onClick={handleBooking}
-                                disabled={!date || !selectedTime || !clientName || !clientEmail || isSubmitting}
+                                disabled={!date || selectedTimes.length === 0 || !clientName || !clientEmail || isSubmitting}
                                 className="w-full mt-6 h-12 font-semibold shadow-lg hover:shadow-xl transition-all"
                             >
                                 {isSubmitting ? "Reserving..." : "Reserve Now"}

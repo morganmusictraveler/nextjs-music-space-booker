@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -41,8 +41,8 @@ export function InquirySpacePage({
         phone: "",
         eventDescription: "",
         equipmentNeeded: "",
-        maxCapacity: "",
-        priceRange: [1000, 10000] as [number, number],
+        maxCapacity: [1, 50] as [number, number],
+        priceRange: [0, 1000000] as [number, number],
         selectedDates: [] as Date[],
         requirements: {
             publiclySellingTickets: false,
@@ -54,6 +54,8 @@ export function InquirySpacePage({
             merchandiseToSell: false,
         },
     })
+    const [riderFile, setRiderFile] = useState<File | null>(null)
+    const riderInputRef = useRef<HTMLInputElement>(null)
     const [calendarOpen, setCalendarOpen] = useState(false)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -69,7 +71,6 @@ export function InquirySpacePage({
             setFormData((prev) => ({ ...prev, selectedDates: [] }))
             return
         }
-
         setFormData((prev) => ({
             ...prev,
             selectedDates: dates.sort((a, b) => a.getTime() - b.getTime()),
@@ -94,8 +95,8 @@ export function InquirySpacePage({
             phone: "",
             eventDescription: "",
             equipmentNeeded: "",
-            maxCapacity: "",
-            priceRange: [1000, 10000],
+            maxCapacity: [1, 50] as [number, number],
+            priceRange: [0, 1000000],
             selectedDates: [],
             requirements: {
                 publiclySellingTickets: false,
@@ -134,7 +135,7 @@ export function InquirySpacePage({
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url(https://d1r3culteut8k2.cloudfront.net/media/attachments/room_room/3461/thumbs/thumb_3e772a10e78ed92907ceb600cfb3bbabe637171c-1920x1281_de9b.jpeg.1920x1080_q85.jpg)`,
+                        backgroundImage: `url(/houseofstrauss1.jpeg)`,
                     }}
                 >
                     <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
@@ -299,18 +300,42 @@ export function InquirySpacePage({
 
                                         {/* Max Capacity */}
                                         <div className="space-y-2">
-                                            <Label htmlFor="maxCapacity" className="text-sm font-medium">
-                                                Expected Attendees / Max Capacity
-                                            </Label>
-                                            <Input
-                                                id="maxCapacity"
-                                                name="maxCapacity"
-                                                type="number"
-                                                placeholder="Number of people"
+                                            <Label className="text-sm font-medium">Expected Attendees</Label>
+                                            <div className="flex items-center justify-center gap-4 py-2">
+                                                <input
+                                                    type="number"
+                                                    min={1}
+                                                    max={formData.maxCapacity[1]}
+                                                    value={formData.maxCapacity[0]}
+                                                    onChange={(e) => {
+                                                        const val = Math.min(Number(e.target.value), formData.maxCapacity[1])
+                                                        setFormData((prev) => ({ ...prev, maxCapacity: [val, prev.maxCapacity[1]] }))
+                                                    }}
+                                                    className="text-2xl font-bold text-primary bg-transparent border-none outline-none w-24 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                />
+                                                <span className="text-xl font-bold text-primary">—</span>
+                                                <input
+                                                    type="number"
+                                                    min={formData.maxCapacity[0]}
+                                                    value={formData.maxCapacity[1]}
+                                                    onChange={(e) => {
+                                                        const val = Math.max(Number(e.target.value), formData.maxCapacity[0])
+                                                        setFormData((prev) => ({ ...prev, maxCapacity: [prev.maxCapacity[0], val] }))
+                                                    }}
+                                                    className="text-2xl font-bold text-primary bg-transparent border-none outline-none w-24 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                />
+                                            </div>
+                                            <Slider
                                                 value={formData.maxCapacity}
-                                                onChange={handleInputChange}
-                                                className="h-11"
-                                                min="1"
+                                                onValueChange={(value) => {
+                                                    if (value.length === 2) {
+                                                        setFormData((prev) => ({ ...prev, maxCapacity: [value[0], value[1]] as [number, number] }))
+                                                    }
+                                                }}
+                                                min={1}
+                                                max={10000}
+                                                step={1}
+                                                className="w-full"
                                             />
                                         </div>
 
@@ -328,22 +353,46 @@ export function InquirySpacePage({
                                                     }
                                                 }}
                                                 min={0}
-                                                max={100000}
+                                                max={1000000}
                                                 step={500}
                                                 className="w-full"
                                             />
                                             <div className="flex justify-between gap-4">
-                                                <div className="flex-1">
+                                                <div className="flex-1 p-3 rounded-lg bg-card shadow-md border border-border">
                                                     <p className="text-xs text-muted-foreground mb-1">Minimum</p>
-                                                    <p className="text-lg font-semibold text-foreground">
-                                                        €{formData.priceRange[0].toLocaleString()}
-                                                    </p>
+                                                    <div className="flex items-center">
+                                                        <span className="text-xl font-bold text-primary mr-0.5">€</span>
+                                                        <input
+                                                            type="number"
+                                                            min={0}
+                                                            max={formData.priceRange[1]}
+                                                            step={500}
+                                                            value={formData.priceRange[0]}
+                                                            onChange={(e) => {
+                                                                const val = Math.min(Number(e.target.value), formData.priceRange[1])
+                                                                setFormData((prev) => ({ ...prev, priceRange: [val, prev.priceRange[1]] }))
+                                                            }}
+                                                            className="text-xl font-bold text-primary bg-transparent border-none outline-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <div className="flex-1 text-right">
+                                                <div className="flex-1 text-right p-3 rounded-lg bg-card shadow-md border border-border">
                                                     <p className="text-xs text-muted-foreground mb-1">Maximum</p>
-                                                    <p className="text-lg font-semibold text-foreground">
-                                                        €{formData.priceRange[1].toLocaleString()}
-                                                    </p>
+                                                    <div className="flex items-center justify-end">
+                                                        <span className="text-xl font-bold text-primary mr-0.5">€</span>
+                                                        <input
+                                                            type="number"
+                                                            min={formData.priceRange[0]}
+                                                            max={1000000}
+                                                            step={500}
+                                                            value={formData.priceRange[1]}
+                                                            onChange={(e) => {
+                                                                const val = Math.max(Number(e.target.value), formData.priceRange[0])
+                                                                setFormData((prev) => ({ ...prev, priceRange: [prev.priceRange[0], val] }))
+                                                            }}
+                                                            className="text-xl font-bold text-primary bg-transparent border-none outline-none w-full text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -352,7 +401,7 @@ export function InquirySpacePage({
                                     {/* Requirements */}
                                     <div className="space-y-4 pt-6 border-t">
                                         <h3 className="font-semibold text-sm text-foreground">Event Requirements</h3>
-                                        <div className="space-y-3">
+                                        <div className="grid grid-cols-3 gap-2">
                                             {[
                                                 { id: "publiclySellingTickets", label: "Publicly selling tickets?" },
                                                 { id: "revenueSharing", label: "Revenue Sharing?" },
@@ -361,63 +410,80 @@ export function InquirySpacePage({
                                                 { id: "lightingEngineerNeeded", label: "Lighting engineer needed?" },
                                                 { id: "insuranceNeeded", label: "Insurance needed?" },
                                                 { id: "merchandiseToSell", label: "Merchandise to be sold?" },
-                                            ].map((item) => (
-                                                <div key={item.id} className="flex items-center gap-3">
-                                                    <Checkbox
-                                                        id={item.id}
-                                                        checked={formData.requirements[item.id as keyof typeof formData.requirements]}
-                                                        onCheckedChange={(checked) => {
+                                            ].map((item) => {
+                                                const selected = formData.requirements[item.id as keyof typeof formData.requirements]
+                                                return (
+                                                    <button
+                                                        type="button"
+                                                        key={item.id}
+                                                        className={`w-full py-2.5 px-2 text-xs font-semibold rounded-xl border transition-all duration-300 text-center leading-tight ${
+                                                            selected
+                                                                ? "bg-primary/10 border-primary text-primary shadow-md cursor-pointer"
+                                                                : "bg-white text-[rgba(0,0,0,0.54)] border-[#d7d7d7] hover:border-primary hover:text-primary hover:bg-primary/5 cursor-pointer"
+                                                        }`}
+                                                        aria-pressed={selected}
+                                                        onClick={() => {
                                                             setFormData((prev) => ({
                                                                 ...prev,
                                                                 requirements: {
                                                                     ...prev.requirements,
-                                                                    [item.id]: checked,
+                                                                    [item.id]: !selected,
                                                                 },
                                                             }))
                                                         }}
-                                                    />
-                                                    <Label
-                                                        htmlFor={item.id}
-                                                        className="text-sm font-normal cursor-pointer"
                                                     >
                                                         {item.label}
-                                                    </Label>
-                                                </div>
-                                            ))}
+                                                    </button>
+                                                )
+                                            })}
                                         </div>
                                     </div>
 
-                                    {/* Text Areas */}
+                                    {/* Rider Upload */}
+                                    <div className="space-y-3 pt-6 border-t">
+                                        <h3 className="font-semibold text-sm text-foreground">Upload Rider</h3>
+                                        <div
+                                            onClick={() => riderInputRef.current?.click()}
+                                            className={`flex flex-col items-center justify-center py-6 px-4 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
+                                                riderFile
+                                                    ? "border-primary bg-primary/5"
+                                                    : "border-[#d7d7d7] bg-white hover:border-primary/50 hover:bg-primary/5"
+                                            }`}
+                                        >
+                                            <input
+                                                ref={riderInputRef}
+                                                type="file"
+                                                accept=".pdf,.doc,.docx"
+                                                onChange={(e) => setRiderFile(e.target.files?.[0] || null)}
+                                                className="hidden"
+                                            />
+                                            {riderFile ? (
+                                                <>
+                                                    <i className="fa-solid fa-file-check text-2xl text-primary mb-2"></i>
+                                                    <span className="text-sm font-medium text-primary">{riderFile.name}</span>
+                                                    <span className="text-xs text-muted-foreground mt-1">Click to change file</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="fa-solid fa-cloud-arrow-up text-2xl text-[#707070] mb-2"></i>
+                                                    <span className="text-sm font-medium text-[#707070]">Click to upload rider</span>
+                                                    <span className="text-xs text-muted-foreground mt-1">PDF, DOC, DOCX (max 10MB)</span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Additional Information */}
                                     <div className="space-y-4 pt-6 border-t">
-                                        <h3 className="font-semibold text-sm text-foreground">Event Description</h3>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="equipmentNeeded" className="text-sm font-medium">
-                                                Any Equipment Specifically Needed
-                                            </Label>
-                                            <Textarea
-                                                id="equipmentNeeded"
-                                                name="equipmentNeeded"
-                                                placeholder="Describe any specific technical requirements you have for your event"
-                                                value={formData.equipmentNeeded}
-                                                onChange={handleInputChange}
-                                                className="min-h-24 resize-none"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="eventDescription" className="text-sm font-medium">
-                                                Tell us about your event *
-                                            </Label>
-                                            <Textarea
-                                                id="eventDescription"
-                                                name="eventDescription"
-                                                placeholder="Describe anything you'd like us to know to help host you"
-                                                value={formData.eventDescription}
-                                                onChange={handleInputChange}
-                                                className="min-h-24 resize-none"
-                                            />
-                                        </div>
+                                        <h3 className="font-semibold text-sm text-foreground">Additional Information</h3>
+                                        <Textarea
+                                            id="equipmentNeeded"
+                                            name="equipmentNeeded"
+                                            placeholder="Describe any additional requirements or information you'd like us to know"
+                                            value={formData.equipmentNeeded}
+                                            onChange={handleInputChange}
+                                            className="min-h-24 resize-none"
+                                        />
                                     </div>
 
                                     {/* Submit Button */}
